@@ -1,0 +1,102 @@
+---
+title: "biostat"
+author: "camille mathilde"
+date: "22/12/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r include=FALSE}
+library(dplyr)
+library(tidyr)
+library(kableExtra)
+library(pander)
+library(corrplot)
+```
+\newpage
+
+# Introduction 
+
+Nous allons étudier l'occurence des maladies coronarienne du coeur. Une étude préalable à déja été faite sur une cohorte d'individus. Ces individus ont répondu à une date donnée à une enquete sur les habitudes alimentaires. Les réponses ont été recueilli dans une base de donnée que l'on nomme \textbf{Coeur}.
+
+## Présentation de la base de donnée
+
+Notre table de donnée contient 337 individus et 15 variables qui sont
+
+\begin{itemize}
+\item Id : identifiant du sujet \
+\item	DateEntrée et Datede sortie : les dates d’netrée et de sortie de l’étude\
+\item	Date Naissance : la date de naissance \
+\item	Statut : si la sortie de l’enquête est due à une maladie coronarienne de cœur, alors le type de maladie est indiqué (on code dont la signification n’est pas précisée ici). Si l’individu est sain à la sortie  de l’enqûete, alors le code vaut 0.\
+\item	Emploi : le type d’emploi\
+\item	MoisEnquête : le mois (1= Janvier, 12= Décembre) où l’individu a répondu à l’enquête sur ses pratiques alimentaires.\
+\item	Taille/Poids (en cm et en kg)\
+\item	Graisse : quantité moyenne de graisse ingérée par jour (g/jour).\
+\item	Fibres : quantité moyenne de fibres ingérée par jour (g/jour).\
+\item	Consommation : la quantité de calories(/100) ingérée par jour.\
+\item	hauteConsomation : une variable binaire, recodage de la variable consomation\
+\item	MCC : une variable binaire, recodage de la variable statut( 1=MCC, 0= pas de MCC)\
+\end{itemize}
+
+Voici les 5 premières ligne de notre table de donnée : 
+
+```{r}
+coeur <- readRDS('data/my_data_frame.rds')
+coeur <-coeur%>%drop_na()
+coeur <-coeur%>%select(-X1)
+coeur$statut<-as.factor(coeur$statut)
+coeur$emploi<-as.factor(coeur$emploi)
+coeur$moisEnqu_e<-as.factor(coeur$moisEnqu_e)
+coeur$hauteConsomation<-as.factor(coeur$hauteConsomation)
+
+
+
+pander(head(coeur))
+```
+
+Cet ensemble d'individu est bien une cohorte car on a relever certaines covariables et les trois données fondammentales qui sont, la date d'entrée dans l'étude, la date de sortie dans l'étude et le cause de sortie dans l'étude.
+
+On peut ajouter que les covariables utilisées dans l'étude sont fixe.
+
+On regarde si la table contient des valeurs manquantes et les enlever si c'est le cas.
+
+On est passé de 337 à 328 individus.
+
+
+
+# statistique descriptive 
+
+Notre jeu de donnée présente 5 variabes quantitatives et 9 variables qualitatives.
+
+Faisons un sommaire des variables quantitatives 
+```{r}
+df_quanti<-coeur%>%select(consommation,fibre,graisse,taille,poids)%>%summary()
+pander(df_quanti)
+```
+
+En moyenne, les individus mangent 2835 calories par jours, ils ingèrent 12.76 gramme de gras par jour en moyenne, ils mesurent 173 cm et pèsent 72.40 kilo.
+
+Faisons un sommaire des variables quantitatives 
+
+```{r}
+df_quali<-coeur%>%select(statut,emploi,moisEnqu_e,hauteConsomation)%>%summary()
+pander(df_quali)
+```
+
+Il y a 2 fois plus de bank worker que de conductor ou de driver. Il y a 149 personnes qui mangent moins de 2750 calories par jours et 179 personnes qui en mangent plus.
+
+```{r}
+df_quanti1<-coeur%>%select(consommation,fibre,graisse,taille,poids)
+corr<-corrplot(cor(df_quanti1),method = "number")
+corr
+```
+
+# regression logistique
+
+# modele de cox 
+
+
+
