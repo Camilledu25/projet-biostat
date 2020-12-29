@@ -20,25 +20,25 @@ library(corrplot)
 
 # Introduction 
 
-Nous allons étudier l'occurence des maladies coronarienne du coeur. Une étude préalable à déja été faite sur une cohorte d'individus. Ces individus ont répondu à une date donnée à une enquete sur les habitudes alimentaires. Les réponses ont été recueilli dans une base de donnée que l'on nomme \textbf{Coeur}.
+De nos jours, les maladies sont de plus en plus étudiées et de mieux en mieux comprises. De nombreux organismes et intituts recherchent des solutions pour vaincre ces maladies en trouvant des traitements. De nombreuses diciplines sont impliquées, notamment la biostatistique, qui permet d'étudier différentes situations avec des données. Dans notre cas, nous allons étudier l'occurence des maladies coronarienne du coeur. Une étude préalable à déja été faite sur une cohorte d'individus. Ces individus ont répondu à une date donnée à une enquete sur les habitudes alimentaires. Les réponses ont été recueilli dans une base de donnée que l'on nomme \textbf{Coeur}.
 
 ## Présentation de la base de donnée
 
 Notre table de donnée contient 337 individus et 15 variables qui sont
 
 \begin{itemize}
-\item Id : identifiant du sujet \
-\item	DateEntrée et Datede sortie : les dates d’netrée et de sortie de l’étude\
-\item	Date Naissance : la date de naissance \
-\item	Statut : si la sortie de l’enquête est due à une maladie coronarienne de cœur, alors le type de maladie est indiqué (on code dont la signification n’est pas précisée ici). Si l’individu est sain à la sortie  de l’enqûete, alors le code vaut 0.\
-\item	Emploi : le type d’emploi\
-\item	MoisEnquête : le mois (1= Janvier, 12= Décembre) où l’individu a répondu à l’enquête sur ses pratiques alimentaires.\
-\item	Taille/Poids (en cm et en kg)\
-\item	Graisse : quantité moyenne de graisse ingérée par jour (g/jour).\
-\item	Fibres : quantité moyenne de fibres ingérée par jour (g/jour).\
-\item	Consommation : la quantité de calories(/100) ingérée par jour.\
-\item	hauteConsomation : une variable binaire, recodage de la variable consomation\
-\item	MCC : une variable binaire, recodage de la variable statut( 1=MCC, 0= pas de MCC)\
+\item \textbf{Id} : identifiant du sujet \
+\item	\textbf{DateEntrée} et \textbf{Date de sortie} : les dates d’netrée et de sortie de l’étude\
+\item	\textbf{Date Naissance} : la date de naissance \
+\item	\textbf{Statut} : si la sortie de l’enquête est due à une maladie coronarienne de cœur, alors le type de maladie est indiqué (on code dont la signification n’est pas précisée ici). Si l’individu est sain à la sortie  de l’enqûete, alors le code vaut 0.\
+\item	\textbf{Emploi} : le type d’emploi\
+\item	\textbf{MoisEnquête} : le mois (1= Janvier, 12= Décembre) où l’individu a répondu à l’enquête sur ses pratiques alimentaires.\
+\item	\textbf{Taille/Poids} (en cm et en kg)\
+\item	\textbf{Graisse} : quantité moyenne de graisse ingérée par jour (g/jour).\
+\item	\textbf{Fibres} : quantité moyenne de fibres ingérée par jour (g/jour).\
+\item	\textbf{Consommation} : la quantité de calories(/100) ingérée par jour.\
+\item	\textbf{hauteConsomation} : une variable binaire, recodage de la variable consomation\
+\item	\textbf{MCC} : une variable binaire, recodage de la variable statut( 1=MCC, 0= pas de MCC)\
 \end{itemize}
 
 Voici les 5 premières ligne de notre table de donnée : 
@@ -61,11 +61,9 @@ Cet ensemble d'individu est bien une cohorte car on a relever certaines covariab
 
 On peut ajouter que les covariables utilisées dans l'étude sont fixe.
 
-On regarde si la table contient des valeurs manquantes et les enlever si c'est le cas.
+Nous observons aussi que la table de données contient des valeurs manquantes. Nous enleverons donc chaque ligne qui contient au moins une valeur manquante.
 
-On est passé de 337 à 328 individus.
-
-
+On passe donc de 337 à 328 individus.
 
 # statistique descriptive 
 
@@ -88,11 +86,21 @@ pander(df_quali)
 
 Il y a 2 fois plus de bank worker que de conductor ou de driver. Il y a 149 personnes qui mangent moins de 2750 calories par jours et 179 personnes qui en mangent plus.
 
-```{r}
+Désormais, regardons la corrélation entre les variables quantitatives :
+
+```{r,fig.width=4.5, fig.height=4.5,fig.align='center'}
 df_quanti1<-coeur%>%select(consommation,fibre,graisse,taille,poids)
-corr<-corrplot(cor(df_quanti1),method = "number")
-corr
+col <- colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD", "#4477AA"))
+corrplot(cor(df_quanti1), method="color", col=col(200), type="upper", order="hclust",
+addCoef.col = "black", tl.col="black", tl.srt=45, diag=FALSE)
+
 ```
+
+On observe que toutes les variables sont corrélées positivement. 
+
+La variable \textbf{consommation} est très corrélée avec la variable \textbf{graisse} mais elle très peu corrélée avec la variable \textbf{taille} 
+
+La variable \textbf{taille} est peu corrélée avec la variable \textbf{graisse}
 
 # regression logistique
 
