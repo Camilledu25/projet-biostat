@@ -15,6 +15,7 @@ library(tidyr)
 library(kableExtra)
 library(pander)
 library(corrplot)
+library(ggplot2)
 ```
 \newpage
 
@@ -102,6 +103,25 @@ La variable \textbf{consommation} est très corrélée avec la variable \textbf{
 
 La variable \textbf{taille} est peu corrélée avec la variable \textbf{graisse}
 
+```{r}
+coeur$MCC<-as.factor(coeur$MCC)
+p<-ggplot(coeur, aes(x=hauteConsomation, y=graisse, color=hauteConsomation)) +
+  geom_boxplot()
+p
+```
+
+```{r}
+coeur$MCC<-as.factor(coeur$MCC)
+p<-ggplot(coeur, aes(x=MCC, y=consommation, color=MCC)) +
+  geom_boxplot()
+p
+```
+```{r}
+table(coeur$emploi,coeur$MCC)
+barplot(prop.table(table(coeur$emploi,coeur$MCC),margin=2),
+beside=TRUE, ylim=c (0 ,1),legend.text = T,
+main="Proportion des filières dans chaque lycée ",xlab ="Filière",ylab="Fréquence")
+```
 # regression logistique
 
 # modele de cox 
