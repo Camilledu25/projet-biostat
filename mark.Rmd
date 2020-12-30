@@ -38,39 +38,49 @@ Notre table de donnée contient 337 individus et 15 variables qui sont
 \item	\textbf{Graisse} : quantité moyenne de graisse ingérée par jour (g/jour).\
 \item	\textbf{Fibres} : quantité moyenne de fibres ingérée par jour (g/jour).\
 \item	\textbf{Consommation} : la quantité de calories(/100) ingérée par jour.\
-\item	\textbf{hauteConsomation} : une variable binaire, recodage de la variable consomation\
+\item	\textbf{hauteConsomation} : une variable binaire, recodage de la variable consommation\
 \item	\textbf{MCC} : une variable binaire, recodage de la variable statut( 1=MCC, 0= pas de MCC)\
 \end{itemize}
 
-Voici les 5 premières ligne de notre table de donnée : 
+Nous avons également rajouté la variable IMC en divisant le poids par la taille au carrée pour faire un lien entre la condition physique et la maladie du coeur car le poids ou la taille tout seul ne suffisent pas pour savoir si une personne est en bonne santé ou en surpoids.
+
+Nous nous sommes également rendu compte qu'il y avait des erreurs dans le recodage de la variables \textbf{statut}. En effet, certains individus avaient contracté une maladie du coeur, mais la variable recodage \textbf{MCC} ne l'avait pas pris en compte. 
+Voici les 5 premières lignes de notre table de données : 
 
 ```{r}
 coeur <- readRDS('data/my_data_frame.rds')
 coeur <-coeur%>%drop_na()
-coeur <-coeur%>%select(-X1)
+coeur <-coeur%>%dplyr::select(-X1)
 coeur$statut<-as.factor(coeur$statut)
 coeur$emploi<-as.factor(coeur$emploi)
 coeur$moisEnqu_e<-as.factor(coeur$moisEnqu_e)
 coeur$hauteConsomation<-as.factor(coeur$hauteConsomation)
 
-
+coeur<-mutate(coeur,imc =poids /(taille/100)^2)
+coeur<-coeur %>% dplyr::select(-MCC)
+coeur <-mutate(coeur,MCC =case_when(
+  statut!=0~1,
+  TRUE~0))
 
 pander(head(coeur))
 ```
 
-Cet ensemble d'individu est bien une cohorte car on a relever certaines covariables et les trois données fondammentales qui sont, la date d'entrée dans l'étude, la date de sortie dans l'étude et le cause de sortie dans l'étude.
+Tout d'abord, nous avons remarqué que certaines variables qualitatives étaient en \textbf{numeric}, ce qui posera problème pour notre étude. Nous les recodons donc en \textbf{factor}.
 
-On peut ajouter que les covariables utilisées dans l'étude sont fixe.
+Cet ensemble d'individu est bien une cohorte car nous avons relevé certaines covariables et les trois données fondamentales qui sont, la date d'entrée dans l'étude, la date de sortie dans l'étude et le cause de sortie dans l'étude.
+
+Nous pouvons ajouter que les covariables utilisées dans l'étude sont fixe.
 
 Nous observons aussi que la table de données contient des valeurs manquantes. Nous enleverons donc chaque ligne qui contient au moins une valeur manquante.
 
-On passe donc de 337 à 328 individus.
+Nous passons donc de 337 à 328 individus.
 
 # statistique descriptive 
 
 Notre jeu de donnée présente 5 variabes quantitatives et 9 variables qualitatives.
 
-Faisons un sommaire des variables quantitatives 
+Faisons un sommaire des variables quantitatives :
+
 ```{r}
 df_quanti<-coeur%>%select(consommation,fibre,graisse,taille,poids)%>%summary()
 pander(df_quanti)
@@ -78,7 +88,7 @@ pander(df_quanti)
 
 En moyenne, les individus mangent 2835 calories par jours, ils ingèrent 12.76 gramme de gras par jour en moyenne, ils mesurent 173 cm et pèsent 72.40 kilo.
 
-Faisons un sommaire des variables quantitatives 
+Faisons un sommaire des variables quantitatives.
 
 ```{r}
 df_quali<-coeur%>%select(statut,emploi,moisEnqu_e,hauteConsomation)%>%summary()
@@ -97,34 +107,158 @@ addCoef.col = "black", tl.col="black", tl.srt=45, diag=FALSE)
 
 ```
 
-On observe que toutes les variables sont corrélées positivement. 
+Nous observons que toutes les variables sont corrélées positivement. 
 
-La variable \textbf{consommation} est très corrélée avec la variable \textbf{graisse} mais elle très peu corrélée avec la variable \textbf{taille} 
+La variable \textbf{consommation} est très corrélée avec la variable \textbf{graisse} mais elle très peu corrélée avec la variable \textbf{taille}.
 
-La variable \textbf{taille} est peu corrélée avec la variable \textbf{graisse}
+La variable \textbf{taille} est peu corrélée avec la variable \textbf{graisse}.
 
-```{r}
-coeur$MCC<-as.factor(coeur$MCC)
-p<-ggplot(coeur, aes(x=hauteConsomation, y=graisse, color=hauteConsomation)) +
-  geom_boxplot()
-p
-```
+Nous allons maintenant regarder le lien entre la maladie et le secteur d'activité.
 
-```{r}
-coeur$MCC<-as.factor(coeur$MCC)
-p<-ggplot(coeur, aes(x=MCC, y=consommation, color=MCC)) +
-  geom_boxplot()
-p
-```
-```{r}
-table(coeur$emploi,coeur$MCC)
+```{r,fig.width=6, fig.height=4.5,fig.align='center'}
 barplot(prop.table(table(coeur$emploi,coeur$MCC),margin=2),
 beside=TRUE, ylim=c (0 ,1),legend.text = T,
-main="Proportion des filières dans chaque lycée ",xlab ="Filière",ylab="Fréquence")
+main="Malade en fonction du secteur d'activité ",xlab ="MCC",ylab="Fréquence")
 ```
-# regression logistique
 
-# modele de cox 
+Nous observons que la proportion de conducteur est plus élevée chez les malades que chez les non malades.
+
+Nous allons regarder le lien entre l'IMC et les maladies coronariennes.
+
+```{r, fig.width=5.5, fig.height=4.5,fig.align='center'}
+coeur$MCC<-as.factor(coeur$MCC)
+p<-ggplot(coeur, aes(x=MCC, y=imc, color=MCC)) +
+  geom_boxplot()
+p
+```
+
+Nous remarquons que la mediane de l'IMC du groupe de personnes malades est à peine plus basse que la médiane pour le groupe de personnes non malade. Une simple analyse descriptive ne suffit pas pour obtenir des résultats bien concluants, nous allons continuer avec des méthodes plus poussées. Nous commencerons par des régréssions logistiques.
+
+# regression logistique binaire
+
+Nous allons commencer par une régréssion logistique qui nous permettera d'expliquer la variable $\textbf{MCC}$ en fonction de toutes les autres covariables. Rappelons que dans la régréssion logistique ce n'est pas la réponse binaire qui est modélisé mais la probabilité de réalisation d'une des deux modalités (avoir une maladie coronarienne ou non). \
+
+Nous allons commencer par regarder le meilleur modèle en comparant les AIC puis nous étudierons ce modèle. \
+
+```{r,}
+library(MASS)
+coeurlogbin<-coeur%>%dplyr::select(-id,-dateEntree,-dateSortie,-dateNaissance,-statut,-hauteConsomation)
+res<-glm(MCC~.,family = binomial(logit),data=coeurlogbin)
+stepAIC(res)
+```
+
+```{r,}
+reslog<-glm(MCC~imc,family = binomial(logit),data=coeurlogbin)
+reslog
+confint(reslog)
+```
+Les modalités de références sont :  
+
+\begin{itemize}
+\item Pour la variable \textbf{emploi} : Bank worker \
+\item Pour la variable \textbf{moisEnquete} : 1 (Janvier) \
+\end{itemize}
 
 
-test
+# régréssion polytomique ordonné
+
+```{r,}
+coeur <-mutate(coeur,consom_dec =case_when(
+  consommation<23~"peu",
+  consommation>22 & consommation<30~"moyen",
+  consommation>29 ~"beaucoup"))
+coeur$consom_dec<-as.factor(coeur$consom_dec)
+```
+
+```{r,}
+coeurlogbin1<-coeur%>%dplyr::select(-id,-dateEntree,-dateSortie,-dateNaissance,-statut,-hauteConsomation,-consommation)
+modele<-polr(consom_dec~.,data=coeurlogbin1)
+stepAIC(modele)
+```
+
+
+
+
+
+
+
+
+```{r,}
+modele2<-polr(consom_dec~graisse+fibre,data=coeurlogbin1)
+modele2
+confint(modele2)
+```
+
+La commande polyr utilisée renvoie l'opposé du coefficient $\beta$ considéré donc nous obtenons les résultats suivants pour nos coefficients: \
+
+QUESTION SUR LES MOINS
+
+$$ln \bigg(\frac{odds(Y \leq moyen | graisse = x_1+1, fibre=x_2)}{odds(Y \leq moyen | graisse = x_1, fibre=x_2)}\bigg)=\beta_{graisse}=1.29$$
+
+A consommation de fibre fixée, augmenter la consommation de graisse de 1 g/jour va diviser $odds(Y \leq moyen)$ par au moins $exp(-1.56)$. \ QUEST
+
+$$ln \bigg(\frac{odds(Y \leq moyen | fibre = x_1+1, graisse=x_2)}{odds(Y \leq moyen | fibre = x_1, graisse=x_2)}\bigg)=\beta_{fibre}=1.81$$
+
+A consommation de graisse fixée, augmenter la consommation de fibre de 1 g/jour va diviser $odds(Y \leq moyen)$ par au moins $exp(-2.599)$. \ QUEST
+
+# régréssion polytomique non-ordonné
+
+
+```{r,}
+library(nnet)
+modele3<-multinom(emploi~.,data=coeurlogbin1)
+stepAIC(modele3)
+```
+
+```{r,}
+modele4<-multinom(emploi~poids+taille,data=coeurlogbin1)
+modele4
+confint(modele4)
+```
+
+Bank worker est la modalité de référence pour emploi. \
+
+$$\beta_{poids|conductor}=ln \bigg(\frac{\frac{P(conductor| poids = x_1+1, taille=x_2)}{P(Bank worker | poids = x_1+1, taille=x_2)}}{\frac{P(conductor | poids = x_1, taille=x_2)}{P(Bank worker | poids = x_1,taille=x_2)}}\bigg)=-0.07620753 $$  
+
+QUESTION POUR LES MO DE REF X1 X2
+
+Toutes les autres covariables fixées à leurs modalités de référencee, un 1kg en plus va multiplier par au moins $exp(-0.1114239)=$ la préférnec de conductor par rapport à Bank worker. \
+
+
+
+$$\beta_{taille|conductor}=ln \bigg(\frac{\frac{P(conductor| taille = x_1+1, poids=x_2)}{P(Bank worker | taille = x_1+1, poids=x_2)}}{\frac{P(conductor | taille = x_1, poids=x_2)}{P(Bank worker | taille = x_1,poids=x_2)}}\bigg)=-0.1694273$$  
+
+QUESTION POUR LES MO DE REF X1 X2
+
+Toutes les autres covariables fixées à leurs modalités de référencee, un 1cm en plus va multiplier par au moins $exp( -0.1959546)=$ la préférence de conductor par rapport à Bank worker. \
+
+
+# Modèle de Cox
+
+
+Recodage au format date. \
+
+```{r,}
+library(lubridate)
+coeur$dateEntree<-as.Date(coeur$dateEntree,format="%d/%m/%y")
+year(coeur$dateEntree)<-1900+year(coeur$dateEntree) %% 100
+coeur$dateSortie<-as.Date(coeur$dateSortie,format="%d/%m/%y")
+year(coeur$dateSortie)<-1900+year(coeur$dateSortie) %% 100
+
+coeur<-coeur%>% mutate(time = coeur$dateSortie - coeur$dateEntree )
+```
+
+```{r,}
+coeurcox<-coeur%>%dplyr::select(-id,-dateEntree,-dateSortie,-dateNaissance,-statut,-hauteConsomation)
+ library(survival)
+  survie=Surv(coeur$time,coeur$MCC)
+  res=coxph(survie~.-moisEnqu_e,data=coeurcox)
+res
+
+
+```
+
+
+#  DIAPO TRUC EN PLUS 
+
+
