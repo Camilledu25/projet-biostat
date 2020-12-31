@@ -21,31 +21,31 @@ library(ggplot2)
 
 # Introduction 
 
-De nos jours, les maladies sont de plus en plus étudiées et de mieux en mieux comprises. De nombreux organismes et intituts recherchent des solutions pour vaincre ces maladies en trouvant des traitements. De nombreuses diciplines sont impliquées, notamment la biostatistique, qui permet d'étudier différentes situations avec des données. Dans notre cas, nous allons étudier l'occurence des maladies coronarienne du coeur. Une étude préalable à déja été faite sur une cohorte d'individus. Ces individus ont répondu à une date donnée à une enquete sur les habitudes alimentaires. Les réponses ont été recueilli dans une base de donnée que l'on nomme \textbf{Coeur}.
+De nos jours, les maladies sont de plus en plus étudiées et de mieux en mieux comprises. De nombreux organismes et intituts recherchent des solutions pour vaincre ces maladies en trouvant des traitements. De nombreuses diciplines sont impliquées, notamment la biostatistique, qui permet d'étudier différentes situations avec des données. Dans notre cas, nous allons étudier l'occurence des maladies coronarienne du coeur. Une étude préalable à déja été faite sur une cohorte d'individus. Ces individus ont répondu à une date donnée à une enquête sur les habitudes alimentaires. Les réponses ont été recueilli dans une base de donnée que l'on nomme \textbf{Coeur}.
 
 ## Présentation de la base de donnée
 
-Notre table de donnée contient 337 individus et 15 variables qui sont
+Notre table de données contient 337 individus et 15 variables qui sont
 
 \begin{itemize}
-\item \textbf{Id} : identifiant du sujet \
-\item	\textbf{DateEntrée} et \textbf{Date de sortie} : les dates d’netrée et de sortie de l’étude\
-\item	\textbf{Date Naissance} : la date de naissance \
-\item	\textbf{Statut} : si la sortie de l’enquête est due à une maladie coronarienne de cœur, alors le type de maladie est indiqué (on code dont la signification n’est pas précisée ici). Si l’individu est sain à la sortie  de l’enqûete, alors le code vaut 0.\
-\item	\textbf{Emploi} : le type d’emploi\
+\item \textbf{Id} : l'identifiant du sujet. \
+\item	\textbf{DateEntrée} et \textbf{Date de sortie} : les dates d’entrée et de sortie de l’étude. \
+\item	\textbf{Date Naissance} : la date de naissance. \
+\item	\textbf{Statut} : si la sortie de l’enquête est due à une maladie coronarienne de cœur, alors le type de maladie est indiqué (la signification du code n’est pas précisée ici). Si l’individu est sain à la sortie  de l’enquête, alors le code vaut 0.\
+\item	\textbf{Emploi} : le type d’emploi.\
 \item	\textbf{MoisEnquête} : le mois (1= Janvier, 12= Décembre) où l’individu a répondu à l’enquête sur ses pratiques alimentaires.\
-\item	\textbf{Taille/Poids} (en cm et en kg)\
-\item	\textbf{Graisse} : quantité moyenne de graisse ingérée par jour (g/jour).\
-\item	\textbf{Fibres} : quantité moyenne de fibres ingérée par jour (g/jour).\
+\item	\textbf{Taille/Poids} : la taille et le poids de l'individu (en cm et en kg).\
+\item	\textbf{Graisse} : la quantité moyenne de graisse ingérée par jour (g/jour).\
+\item	\textbf{Fibres} : la quantité moyenne de fibres ingérée par jour (g/jour).\
 \item	\textbf{Consommation} : la quantité de calories(/100) ingérée par jour.\
-\item	\textbf{hauteConsomation} : une variable binaire, recodage de la variable consommation\
-\item	\textbf{MCC} : une variable binaire, recodage de la variable statut( 1=MCC, 0= pas de MCC)\
+\item	\textbf{hauteConsomation} : une variable binaire, recodage de la variable consommation.\
+\item	\textbf{MCC} : une variable binaire, recodage de la variable statut (1=MCC, 0=pas de MCC). \
 \end{itemize}
 
-Nous avons également rajouté la variable IMC en divisant le poids par la taille au carrée pour faire un lien entre la condition physique et la maladie du coeur car le poids ou la taille tout seul ne suffisent pas pour savoir si une personne est en bonne santé ou en surpoids. \
+Nous avons également rajouté la variable $\textbf{IMC}$ en divisant le poids par la taille au carrée pour faire un lien entre la condition physique et la maladie du coeur car le poids ou la taille tout seul ne suffisent pas pour savoir si une personne est en bonne santé ou en surpoids. \
 
-Nous nous sommes également rendu compte qu'il y avait des erreurs dans le recodage de la variables \textbf{statut}. En effet, certains individus avaient contracté une maladie du coeur, mais la variable recodage \textbf{MCC} ne l'avait pas pris en compte nous avons rectifié ça. Nous avons aussi remarqué que certaines variables qualitatives étaient en \textbf{numeric}, ce qui posera problème pour notre étude. Nous les recodons donc en \textbf{factor}.\
-Nous observons enfin que la table de données contient des valeurs manquantes. Nous enleverons donc chaque ligne qui contient au moins une valeur manquante. Nous passons donc de 337 à 328 individus. \
+Nous nous sommes également rendu compte qu'il y avait des erreurs dans le recodage de la variables \textbf{statut}. En effet, certains individus avaient contracté une maladie du coeur, mais la variable recodage \textbf{MCC} ne l'avait pas pris en compte nous avons  donc rectifié ça. Nous avons aussi remarqué que certaines variables qualitatives étaient en \textbf{numeric}, ce qui posera problème pour notre étude. Nous les recodons donc en \textbf{factor}.\
+Nous observons enfin que la table de données contient des valeurs manquantes. Nous enlevons donc chaque ligne qui contient au moins une valeur manquante. Nous passons donc de 337 à 328 individus. \
 
 Regardons les 5 premières lignes de notre table de données : \
 
@@ -71,32 +71,32 @@ pander(head(coeur))
 Remarquons que cet ensemble d'individu est bien une cohorte car nous avons relevé certaines covariables et les trois données fondamentales qui sont, la date d'entrée dans l'étude, la date de sortie dans l'étude et le cause de sortie dans l'étude. Nous pouvons ajouter que les covariables utilisées dans l'étude sont fixe.
 
 
+\newpage
 
-# statistique descriptive 
+# Statistique descriptive 
 
-Notre jeu de donnée présente 5 variabes quantitatives et 9 variables qualitatives.
+Notre jeu de donnée présente 5 variables quantitatives et 9 variables qualitatives.
 
-Faisons un sommaire des variables quantitatives :
-
-```{r}
+Faisons un sommaire des variables quantitatives : 
+```{r,echo=FALSE,fig.width=6, fig.height=4,fig.align='center'}
 df_quanti<-coeur%>%select(consommation,fibre,graisse,taille,poids)%>%summary()
 pander(df_quanti)
 ```
 
-En moyenne, les individus mangent 2835 calories par jours, ils ingèrent 12.76 gramme de gras par jour en moyenne, ils mesurent 173 cm et pèsent 72.40 kilo.
+Les individus mangent en moyenne 2835 calories par jours. Ils ingèrent de plus 12.76 grammes de gras par jour, mesurent 173 cm et pèsent 72.40 kilo-gramme en moyenne. \
 
-Faisons un sommaire des variables quantitatives.
+Faisons maintenant un sommaire des variables quantitatives : 
 
-```{r}
+```{r,echo=FALSE,fig.width=6, fig.height=4,fig.align='center'}
 df_quali<-coeur%>%select(statut,emploi,moisEnqu_e,hauteConsomation)%>%summary()
 pander(df_quali)
 ```
 
-Il y a 2 fois plus de bank worker que de conductor ou de driver. Il y a 149 personnes qui mangent moins de 2750 calories par jours et 179 personnes qui en mangent plus.
+Il y a 2 fois plus de $\textbf{Bank worker}$ que de $\textbf{Conductor}$ ou de $\textbf{Driver}$. Il y a $149$ personnes qui mangent moins de $2750$ calories par jours et $179$ personnes qui en mangent plus. \
 
-Désormais, regardons la corrélation entre les variables quantitatives :
+Regardons désormais la corrélation entre les variables quantitatives : \
 
-```{r,fig.width=4.5, fig.height=4.5,fig.align='center'}
+```{r,fig.width=4.1, fig.height=2.7,fig.align='center',echo=FALSE}
 df_quanti1<-coeur%>%select(consommation,fibre,graisse,taille,poids)
 col <- colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD", "#4477AA"))
 corrplot(cor(df_quanti1), method="color", col=col(200), type="upper", order="hclust",
@@ -104,15 +104,14 @@ addCoef.col = "black", tl.col="black", tl.srt=45, diag=FALSE)
 
 ```
 
-Nous observons que toutes les variables sont corrélées positivement. 
+Nous observons que toutes les variables sont corrélées positivement. \ 
 
-La variable \textbf{consommation} est très corrélée avec la variable \textbf{graisse} mais elle très peu corrélée avec la variable \textbf{taille}.
 
-La variable \textbf{taille} est peu corrélée avec la variable \textbf{graisse}.
+La variable \textbf{consommation} est très corrélée avec la variable \textbf{graisse} mais elle est très peu corrélée avec la variable \textbf{taille}. La variable \textbf{taille} est peu corrélée avec la variable \textbf{graisse}. \
 
-Nous allons maintenant regarder le lien entre la maladie et le secteur d'activité.
+Nous allons maintenant regarder le lien entre la maladie et le secteur d'activité. \
 
-```{r,fig.width=6, fig.height=4.5,fig.align='center'}
+```{r,fig.width=5, fig.height=3.5,fig.align='center',echo=FALSE}
 barplot(prop.table(table(coeur$emploi,coeur$MCC),margin=2),
 beside=TRUE, ylim=c (0 ,1),legend.text = T,
 main="Malade en fonction du secteur d'activité ",xlab ="MCC",ylab="Fréquence")
@@ -120,9 +119,9 @@ main="Malade en fonction du secteur d'activité ",xlab ="MCC",ylab="Fréquence")
 
 Nous observons que la proportion de conducteur est plus élevée chez les malades que chez les non malades.
 
-Nous allons regarder le lien entre l'IMC et les maladies coronariennes.
+Nous allons maintenant regarder le lien entre l'IMC et les maladies coronariennes.
 
-```{r, fig.width=5.5, fig.height=4.5,fig.align='center'}
+```{r, fig.width=4.5, fig.height=3.5,fig.align='center',echo=FALSE}
 coeur$MCC<-as.factor(coeur$MCC)
 p<-ggplot(coeur, aes(x=MCC, y=imc, color=MCC)) +
   geom_boxplot()
@@ -249,8 +248,8 @@ coeur<-coeur%>% mutate(time = coeur$dateSortie - coeur$dateEntree )
 coeurcox<-coeur%>%dplyr::select(-id,-dateEntree,-dateSortie,-dateNaissance,-statut,-hauteConsomation)
  library(survival)
   survie=Surv(coeur$time,coeur$MCC)
-  res=coxph(survie~.-moisEnqu_e,data=coeurcox)
-res
+#   res=coxph(survie~.-moisEnqu_e,data=coeurcox)
+# res
 
 
 ```
