@@ -42,10 +42,12 @@ Notre table de donnée contient 337 individus et 15 variables qui sont
 \item	\textbf{MCC} : une variable binaire, recodage de la variable statut( 1=MCC, 0= pas de MCC)\
 \end{itemize}
 
-Nous avons également rajouté la variable IMC en divisant le poids par la taille au carrée pour faire un lien entre la condition physique et la maladie du coeur car le poids ou la taille tout seul ne suffisent pas pour savoir si une personne est en bonne santé ou en surpoids.
+Nous avons également rajouté la variable IMC en divisant le poids par la taille au carrée pour faire un lien entre la condition physique et la maladie du coeur car le poids ou la taille tout seul ne suffisent pas pour savoir si une personne est en bonne santé ou en surpoids. \
 
-Nous nous sommes également rendu compte qu'il y avait des erreurs dans le recodage de la variables \textbf{statut}. En effet, certains individus avaient contracté une maladie du coeur, mais la variable recodage \textbf{MCC} ne l'avait pas pris en compte. 
-Voici les 5 premières lignes de notre table de données : 
+Nous nous sommes également rendu compte qu'il y avait des erreurs dans le recodage de la variables \textbf{statut}. En effet, certains individus avaient contracté une maladie du coeur, mais la variable recodage \textbf{MCC} ne l'avait pas pris en compte nous avons rectifié ça. Nous avons aussi remarqué que certaines variables qualitatives étaient en \textbf{numeric}, ce qui posera problème pour notre étude. Nous les recodons donc en \textbf{factor}.\
+Nous observons enfin que la table de données contient des valeurs manquantes. Nous enleverons donc chaque ligne qui contient au moins une valeur manquante. Nous passons donc de 337 à 328 individus. \
+
+Regardons les 5 premières lignes de notre table de données : \
 
 ```{r}
 coeur <- readRDS('data/my_data_frame.rds')
@@ -64,16 +66,11 @@ coeur <-mutate(coeur,MCC =case_when(
 
 pander(head(coeur))
 ```
+\
 
-Tout d'abord, nous avons remarqué que certaines variables qualitatives étaient en \textbf{numeric}, ce qui posera problème pour notre étude. Nous les recodons donc en \textbf{factor}.
+Remarquons que cet ensemble d'individu est bien une cohorte car nous avons relevé certaines covariables et les trois données fondamentales qui sont, la date d'entrée dans l'étude, la date de sortie dans l'étude et le cause de sortie dans l'étude. Nous pouvons ajouter que les covariables utilisées dans l'étude sont fixe.
 
-Cet ensemble d'individu est bien une cohorte car nous avons relevé certaines covariables et les trois données fondamentales qui sont, la date d'entrée dans l'étude, la date de sortie dans l'étude et le cause de sortie dans l'étude.
 
-Nous pouvons ajouter que les covariables utilisées dans l'étude sont fixe.
-
-Nous observons aussi que la table de données contient des valeurs manquantes. Nous enleverons donc chaque ligne qui contient au moins une valeur manquante.
-
-Nous passons donc de 337 à 328 individus.
 
 # statistique descriptive 
 
