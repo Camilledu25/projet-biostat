@@ -148,12 +148,9 @@ reslog<-glm(MCC~imc,family = binomial(logit),data=coeurlogbin)
 reslog
 confint(reslog)
 ```
-Les modalités de références sont :  
+$\hat \mu$= -0.88265, $\hat \beta_1$=-0.1315. 
+Augmenter l'imc de 1 va multiplier l'odds d'avoir une MCC par au moins $\exp(-0.09488249)=$ 0.90 et au plus $\exp(0.0677505)=1.07009$.  \
 
-\begin{itemize}
-\item Pour la variable \textbf{emploi} : Bank worker \
-\item Pour la variable \textbf{moisEnquete} : 1 (Janvier) \
-\end{itemize}
 
 
 # régréssion polytomique ordonné
@@ -191,16 +188,16 @@ QUESTION SUR LES MOINS
 
 $$ln \bigg(\frac{odds(Y \leq moyen | graisse = x_1+1, fibre=x_2)}{odds(Y \leq moyen | graisse = x_1, fibre=x_2)}\bigg)=\beta_{graisse}=1.29$$
 
-A consommation de fibre fixée, augmenter la consommation de graisse de 1 g/jour va diviser $odds(Y \leq moyen)$ par au moins $exp(-1.56)$. \ QUEST
+A consommation de fibre fixée, augmenter la consommation de graisse de 1 g/jour va diviser $odds(Y \leq moyen)$ par au moins $exp(-1.56)$ et au plus $exp(-1.05)$. \ QUEST
 
 $$ln \bigg(\frac{odds(Y \leq moyen | fibre = x_1+1, graisse=x_2)}{odds(Y \leq moyen | fibre = x_1, graisse=x_2)}\bigg)=\beta_{fibre}=1.81$$
 
-A consommation de graisse fixée, augmenter la consommation de fibre de 1 g/jour va diviser $odds(Y \leq moyen)$ par au moins $exp(-2.599)$. \ QUEST
+A consommation de graisse fixée, augmenter la consommation de fibre de 1 g/jour va diviser $odds(Y \leq moyen)$ par au moins $exp(-2.599)$ et au plus $exp(-1.07)$. \ QUEST
 
 # régréssion polytomique non-ordonné
 
 
-```{r,}
+```{r,results=FALSE}
 library(nnet)
 modele3<-multinom(emploi~.,data=coeurlogbin1)
 stepAIC(modele3)
@@ -218,7 +215,7 @@ $$\beta_{poids|conductor}=ln \bigg(\frac{\frac{P(conductor| poids = x_1+1, taill
 
 QUESTION POUR LES MO DE REF X1 X2
 
-Toutes les autres covariables fixées à leurs modalités de référencee, un 1kg en plus va multiplier par au moins $exp(-0.1114239)=$ la préférnec de conductor par rapport à Bank worker. \
+Toutes les autres covariables fixées à leurs modalités de référencee, un 1kg en plus va multiplier par au moins $exp(-0.1114239)=$ la préférence de conductor par rapport à Bank worker. \
 
 
 
