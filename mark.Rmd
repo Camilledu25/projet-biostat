@@ -156,7 +156,7 @@ ggplot(coeurlogbin,aes(x=coeurlogbin$imc,y=coeurlogbin$MCC))+geom_point()
 ```
 Nous osbervons qu
 
-Regardons tout d'abord les relations entre les maladies coronariennes et le poids. \
+Regardons les relations entre les maladies coronariennes et le poids. \
 
 ```{r,}
 ggplot(coeurlogbin,aes(x=coeurlogbin$poids,y=coeurlogbin$MCC))+geom_point()
@@ -220,8 +220,20 @@ Fixer une imc et augmenter le poids signifie que nous considèrons que la person
 En conclusion de cette partie, il faut retenir que plus l'imc d'une personne augmente, plus le risque q'elle tombe malade d'une maladie coronarienne diminue. Avoir un imc stable et assez bas est un facteur protecteur du risque de maladie coronarienne.
 
 
-Nous trouvons également intéressant de regarder le lien entre la consommation de fibre et les maladies coronariennes. Pour cela nous allons effectuer une nouvelle régréssion logistique. \
+# MCC expliqué par la consommation de fibre
 
+Nous trouvons également intéressant de regarder le lien entre la consommation de fibre et les maladies coronariennes. \
+
+Regardons la relation entre les maladies coronariennes et la consommation de fibre. \
+
+```{r,}
+ggplot(coeurlogbin,aes(x=coeurlogbin$fibre,y=coeurlogbin$MCC))+geom_point()
+
+```
+
+Nous observons que les personnes mangeant plus de 2g de fibre par jour sont moins malades. \
+
+Effectuer désormais la régréssion logistique. \
 ```{r,}
 reslog<-glm(MCC~fibre-1,family = binomial(logit),data=coeurlogbin) #nous enelevons l'intercept qui n'est pas significatif
 summary(reslog)
@@ -321,11 +333,11 @@ coeur<-coeur%>% mutate(time = coeur$dateSortie - coeur$dateEntree )
 ```
 
 ```{r,}
-#coeurcox<-coeur%>%dplyr::select(-id,-dateEntree,-dateSortie,-dateNaissance,-statut,-hauteConsomation,-moisEnqu_e)
-#  library(survival)
-#   survie=Surv(coeur$time,coeur$MCC)
-#  res=coxph(coeur$survie~.,data=coeur,id=coeur$id)
-# res
+coeurcox<-coeur%>%dplyr::select(-id,-dateEntree,-dateSortie,-dateNaissance,-statut,-hauteConsomation,-moisEnqu_e)
+ library(survival)
+  survie=Surv(coeur$time,coeur$MCC)
+ res=coxph(survie~coeur$graisse,id=coeur$id)
+res
 
 
 ```
