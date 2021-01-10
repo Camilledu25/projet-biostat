@@ -80,7 +80,7 @@ Notre jeu de donnée présente 5 variables quantitatives et 9 variables qualitat
 
 Faisons un sommaire des variables quantitatives : 
 ```{r,echo=FALSE,fig.width=6, fig.height=4,fig.align='center'}
-df_quanti<-coeur%>%select(consommation,fibre,graisse,taille,poids)%>%summary()
+df_quanti<-coeur%>%dplyr::select(consommation,fibre,graisse,taille,poids)%>%summary()
 pander(df_quanti)
 ```
 
@@ -89,7 +89,7 @@ Les individus mangent en moyenne 2835 calories par jours. Ils ingèrent de plus 
 Faisons maintenant un sommaire des variables quantitatives : 
 
 ```{r,echo=FALSE,fig.width=6, fig.height=4,fig.align='center'}
-df_quali<-coeur%>%select(statut,emploi,moisEnqu_e,hauteConsomation)%>%summary()
+df_quali<-coeur%>%dplyr::select(statut,emploi,moisEnqu_e,hauteConsomation)%>%summary()
 pander(df_quali)
 ```
 
@@ -98,7 +98,7 @@ Il y a 2 fois plus de $\textbf{Bank worker}$ que de $\textbf{Conductor}$ ou de $
 Regardons désormais la corrélation entre les variables quantitatives : \
 
 ```{r,fig.width=4.1, fig.height=2.7,fig.align='center',echo=FALSE}
-df_quanti1<-coeur%>%select(consommation,fibre,graisse,taille,poids)
+df_quanti1<-coeur%>%dplyr::select(consommation,fibre,graisse,taille,poids)
 col <- colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD", "#4477AA"))
 corrplot(cor(df_quanti1), method="color", col=col(200), type="upper", order="hclust",
 addCoef.col = "black", tl.col="black", tl.srt=45, diag=FALSE)
@@ -319,8 +319,14 @@ Toutes les autres covariables fixées à leurs modalités de référencee, un 1c
 
 # Modèle de Cox
 
+Dans cette partie, nous allons chercher à répondre à la problématique suivante :  à une date donnée, quelle sera le taux de nouveaux malades dans la population étudiée ?
 
-Recodage au format date. \
+
+<!-- Les paramètres à estimer sont fonction d'incidence instentatnée, sera les lambda, represente le fait que à une date donnée quelle estt le taux de production de nouveau malade qui va avoir lieux,Ce n'est pas les lambda que lon estime, on estime les parametres d'un modeles de cox qui sont des effets multiplcatifs entre différents lambda, pour chaque sous population possible, on a une fonction laambda et cette fonction lambda nous dit lamambda de t, c est a une date t combien , quelle est le taux de production de nouveau malade. -->
+<!-- Dans notre siuation, il y a aucune information sur la date d'entrée , on les ait mis dans un certain etat particulier  -->
+
+Nous allons désormais, netoyer la base de données et faire des transformation de format des variables pour pouvoir utiliser le model de Cox.
+Les variables qui contiennent une date ( date entrée, date sortie et date de naissance) sont de type charactère donc dans un premier temps, nous allons convertir toutes ces variable en type Date.
 
 ```{r,}
 library(lubridate)
@@ -332,18 +338,112 @@ year(coeur$dateSortie)<-1900+year(coeur$dateSortie) %% 100
 coeur<-coeur%>% mutate(time = coeur$dateSortie - coeur$dateEntree )
 ```
 
-```{r,}
+Ensuite, la fonction qui execute le modèle de cox à besoin de valeurs numériques représentant les dates. Sous R, chaque date est repésenté par un nombre de jour à partir d'une date d'origine : le 1 janvier 1970. Nous allons donc créer une variable que récupérera ce nombre pour chaque date correspondant à chaque individus.
+
+```{r}
+coeur2<-coeur
+year(coeur2$dateEntree)<-1900+year(coeur2$dateEntree) %% 100
+coeur2<-coeur2%>%mutate(date_entree_num=as.numeric(as.Date(coeur2$dateEntree)))
+year(coeur2$dateSortie)<-1900+year(coeur2$dateSortie) %% 100
+coeur2<-coeur2%>%mutate(date_sortie_num=as.numeric(as.Date(coeur2$dateSortie)))
+```
+
+Nous pouvons désormais faire nos analyse avec le modèle de Cox. 
+Pour une prèmière analyse, nous estimerons notre odèle en prenant en compte toute les covariables possibles, présentes dans la table de données. On obtient les résultats suivant :
+
+```{r}
 coeurcox<-coeur%>%dplyr::select(-id,-dateEntree,-dateSortie,-dateNaissance,-statut,-hauteConsomation,-moisEnqu_e)
  library(survival)
-  survie=Surv(coeur$time,coeur$MCC)
- res=coxph(survie~coeur$graisse,id=coeur$id)
-res
+  survie=Surv(coeur2$date_entree_num,coeur2$date_sortie_num,coeur$MCC)
+ res=coxph(survie~coeur2$fibre+coeur2$taille+coeur2$poids+coeur2$consommation+coeur2$emploi+coeur2$graisse,id=coeur2$id)
+```
 
+Avant d’interpréter plus avant le modèle, il est utile de voir si
+l’hypothèse que les formes multiplicatives et lescovariables sont  indépendantes du temps est vérifiée .
+Cette vérification est à faire sur le modèle global, avant même
+d’interpréter les tests (qui ne sont pas valables lorsque l’hypothèse n’est pas vérifiée), et avant de sélectionner des variables : il se peut qu’une covariable ait un effet non significatif lorsque cet effet est moyenné dans le temps mais qu’elle ait une interaction significative avec le temps. C’est pourquoi il vaut mieux tester l’hypothèse de HP avant d’interpréter la significativité des effets 
 
+```{r}
+res.c=cox.zph(res)
+res.c
+```
+
+Le test global de validité de l’hypothèse de HP conduit à ne pas rejeter cette hypothèse au seuil de $5\%$ : aucune covariable n'a un effet dépendant du temps. 
+
+Il est possible de générer des graphiques de résidus pour des prédicteurs individuels. Dans les graphiques, une pente non nulle est une preuve contre la proportionnalité. Remarque : R trace le graphe des résidus en incluant par défaut un lissage par des
+splines (trait plein), et des IC à 95%.
+
+```{r}
+par(mfrow=c(2,4))
+plot(res.c)
+```
+A l'oeil nu, on observe que a peu près que toute les droites sont à l'horizontales. Peut etre que la droites dans le graphiques de et emploie est a preine incliné mais comme la $p_{valeur}$ restait supérieur à 5 pourcent, on va considérer que cette covariable reste indépendante du temps. En revanche la droite de consommation est aussi un peu uplus inclinée mais sa $p_{valeur}= 0.085$ sup´rieur à 5 pourcent mais supérieur à 10 pourcent quand meme. On va considérer que cette covariable dépend du temps. Il ne serait pas judicieux de l'étudier avec le modèle de cox à risques proportionnelles.
+
+```{r}
+ res=coxph(survie~coeur2$fibre+coeur2$taille+coeur2$poids+coeur2$emploi+coeur2$graisse,id=coeur$id)
+ summary(res)
 ```
 
 
-#  DIAPO TRUC EN PLUS 
+Le test de Wald teste l’effet d’une covariable, les autres étant dans le modèle. S’il n’est pas significatif, cela ne veut pas dire qu’il ne le serait pas dans le modèle constitué uniquement de cette covariable.
+
+Le test de Wald pour la covariable « taille » montre que le coefficients correspondants est fortement significatifs au seuil $5\%$ $p_{values} < 0.05$ : cette covariable a un effet important sur l'incidence instentanée à un moment t. Les autres covariables ne modifient pas significativement cette incidence lorsque taille est dans le modèle.
+
+On sélectionne les variables pas à pas c'est à dire, on
+enlève celle dont la statistique de Wald est la plus faible avec $p_{valeur}$ la plus élevée. Ensuite on refait tourner le modèle et on recommence jusqu’à obtention de toutes les variables significatives.  
+
+On obtiens le modèle final suivant :
+
+```{r}
+res=coxph(survie~coeur2$taille,id=coeur$id)
+summary(res)
+confint(res)
+```
+
+Les p-values des 3 tests sont très inférieures à 5%, ce qui
+montre que l’ajustement d’un modèle de Cox est très pertinent au seuil
+5%.
+
+Seul la co-variable « taille » a un coefficients fortement significatifs au seuil 5% $p_{values} < 0.05$. 
+
+L’exponentielle des coefficients mesure l’effet multiplicatif
+d’une augmentation de la covariable d’une unité sur le taux,
+toutes choses égales par ailleurs.
+
+En supposant que toutes les autres covariables restent
+constantes, la taille a un effet positif sur le taux de nouveaux malades à un instant donnée, l’effet d’une augmentation de taille de 1 unité réduit le taux de nouveau malade à l'instant t par un facteur de en moyenne,  au moins, $exp(-0.08944234)=0.9144$
+c’est à dire par $100\%-91,44\%=8,56\%$.
+
+
+Auparavant, nous avont constater que dans le modèle global, tout les autres coefficients n'étaient pas significatifs au seuil de 5 pourcent. Mais qu'en est t-il si on test avec un modèle avec seulement 1 covariable. Regardons ce qui se passe pour fibre :
+```{r}
+res=coxph(survie~coeur$fibre,id=coeur$id)
+summary(res)
+
+confint(res)
+```
+« fibre » a un coefficients significatifs au seuil 5% $p_{values} < 0.05$. 
+
+En supposant que toutes les autres covariables restent
+constantes, fibre a un effet positif sur le taux de nouveaux malades à un instant donnée, l’effet d’une augmentation de taille de 1 unité réduit le taux de nouveau malade à l'instant t par un facteur de,  au moins, $exp(-0.5315  )=0.5877227$
+c’est à dire par $100\%-58.77\%=41,33\%$.
+
+Testons maintenant pour la variable graisse
+```{r}
+ res=coxph(survie~coeur$graisse,id=coeur$id)
+summary(res)
+confint(res)
+```
+« graisse » a une $p_{values} > 0.05$. De plus, l'intervalle de confiance n'est pas interpretable car il contient 0. Nous ne pouvons pas faire d'estimation avec ce modèle.
+
+
+```{r}
+res=coxph(survie~coeur2$emploi,id=coeur2$id)
+summary(res)
+confint(res)
+```
+L'intervalle de confiance comprend 0, rien n'est interpretable
+
 
 # Conclusion : Comment diminuer les rirsques d'avoir une maladie coronarienne.
 
