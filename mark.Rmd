@@ -80,7 +80,7 @@ Notre jeu de donnée présente 5 variables quantitatives et 9 variables qualitat
 
 Faisons un sommaire des variables quantitatives : 
 ```{r,echo=FALSE,fig.width=6, fig.height=4,fig.align='center'}
-df_quanti<-coeur%>%select(consommation,fibre,graisse,taille,poids)%>%summary()
+df_quanti<-coeur%>%dplyr::select(consommation,fibre,graisse,taille,poids)%>%summary()
 pander(df_quanti)
 ```
 
@@ -89,7 +89,7 @@ Les individus mangent en moyenne 2835 calories par jours. Ils ingèrent de plus 
 Faisons maintenant un sommaire des variables quantitatives : 
 
 ```{r,echo=FALSE,fig.width=6, fig.height=4,fig.align='center'}
-df_quali<-coeur%>%select(statut,emploi,moisEnqu_e,hauteConsomation)%>%summary()
+df_quali<-coeur%>%dplyr::select(statut,emploi,moisEnqu_e,hauteConsomation)%>%summary()
 pander(df_quali)
 ```
 
@@ -98,7 +98,7 @@ Il y a 2 fois plus de $\textbf{Bank worker}$ que de $\textbf{Conductor}$ ou de $
 Regardons désormais la corrélation entre les variables quantitatives : \
 
 ```{r,fig.width=4.1, fig.height=2.7,fig.align='center',echo=FALSE}
-df_quanti1<-coeur%>%select(consommation,fibre,graisse,taille,poids)
+df_quanti1<-coeur%>%dplyr::select(consommation,fibre,graisse,taille,poids)
 col <- colorRampPalette(c("#BB4444", "#EE9988", "#FFFFFF", "#77AADD", "#4477AA"))
 corrplot(cor(df_quanti1), method="color", col=col(200), type="upper", order="hclust",
 addCoef.col = "black", tl.col="black", tl.srt=45, diag=FALSE)
@@ -332,15 +332,74 @@ year(coeur$dateSortie)<-1900+year(coeur$dateSortie) %% 100
 coeur<-coeur%>% mutate(time = coeur$dateSortie - coeur$dateEntree )
 ```
 
-```{r,}
+```{r}
+coeur2<-coeur
+year(coeur2$dateEntree)<-1900+year(coeur2$dateEntree) %% 100
+coeur2<-coeur2%>%mutate(date_entree_num=as.numeric(as.Date(coeur2$dateEntree)))
+year(coeur2$dateSortie)<-1900+year(coeur2$dateSortie) %% 100
+coeur2<-coeur2%>%mutate(date_sortie_num=as.numeric(as.Date(coeur2$dateSortie)))
+```
+
+```{r}
 coeurcox<-coeur%>%dplyr::select(-id,-dateEntree,-dateSortie,-dateNaissance,-statut,-hauteConsomation,-moisEnqu_e)
  library(survival)
-  survie=Surv(coeur$time,coeur$MCC)
+  survie=Surv(coeur2$date_entree_num,coeur2$date_sortie_num,coeur$MCC)
  res=coxph(survie~coeur$graisse,id=coeur$id)
 res
 
 
 ```
+
+
+```{r}
+coeurcox<-coeur%>%dplyr::select(-id,-dateEntree,-dateSortie,-dateNaissance,-statut,-hauteConsomation,-moisEnqu_e)
+ library(survival)
+  survie=Surv(coeur2$date_entree_num,coeur2$date_sortie_num,coeur$MCC)
+ res=coxph(survie~coeur$taille,id=coeur$id)
+res
+```
+
+```{r}
+coeurcox<-coeur%>%dplyr::select(-id,-dateEntree,-dateSortie,-dateNaissance,-statut,-hauteConsomation,-moisEnqu_e)
+ library(survival)
+  survie=Surv(coeur2$date_entree_num,coeur2$date_sortie_num,coeur$MCC)
+ res=coxph(survie~coeur$imc,id=coeur$id)
+res
+```
+
+```{r}
+coeurcox<-coeur%>%dplyr::select(-id,-dateEntree,-dateSortie,-dateNaissance,-statut,-hauteConsomation,-moisEnqu_e)
+ library(survival)
+  survie=Surv(coeur2$date_entree_num,coeur2$date_sortie_num,coeur$MCC)
+ res=coxph(survie~coeur$consommation,id=coeur$id)
+res
+```
+```{r}
+coeurcox<-coeur%>%dplyr::select(-id,-dateEntree,-dateSortie,-dateNaissance,-statut,-hauteConsomation,-moisEnqu_e)
+ library(survival)
+  survie=Surv(coeur2$date_entree_num,coeur2$date_sortie_num,coeur$MCC)
+ res=coxph(survie~coeur$emploi,id=coeur$id)
+res
+```
+
+```{r}
+coeurcox<-coeur%>%dplyr::select(-id,-dateEntree,-dateSortie,-dateNaissance,-statut,-hauteConsomation,-moisEnqu_e)
+ library(survival)
+  survie=Surv(coeur2$date_entree_num,coeur2$date_sortie_num,coeur$MCC)
+ res=coxph(survie~coeur$taille+coeur$poids,id=coeur$id)
+res
+```
+
+
+```{r}
+coeurcox<-coeur%>%dplyr::select(-id,-dateEntree,-dateSortie,-dateNaissance,-statut,-hauteConsomation,-moisEnqu_e)
+ library(survival)
+  survie=Surv(coeur2$date_entree_num,coeur2$date_sortie_num,coeur$MCC)
+ res=coxph(survie~coeur$fibre,id=coeur$id)
+res
+```
+
+
 
 
 #  DIAPO TRUC EN PLUS 
