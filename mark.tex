@@ -1,0 +1,1481 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={biostat},
+  pdfauthor={camille mathilde},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs}
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+
+\title{biostat}
+\author{camille mathilde}
+\date{22/12/2020}
+
+\begin{document}
+\maketitle
+
+\newpage
+
+\hypertarget{introduction}{%
+\section{Introduction}\label{introduction}}
+
+De nos jours, les maladies sont de plus en plus étudiées et de mieux en
+mieux comprises. De nombreux organismes et instituts recherchent des
+solutions pour vaincre ces maladies en trouvant des traitements. De
+nombreuses diciplines sont impliquées, notamment la biostatistique, qui
+permet d'étudier différentes situations avec des données. Dans notre
+cas, nous allons étudier l'occurence des maladies coronarienne du coeur.
+Une étude préalable à déja été faite sur une cohorte d'individus. Ces
+individus ont répondu à une date donnée à une enquête sur les habitudes
+alimentaires. Les réponses ont été recueilli dans une base de donnée que
+l'on nomme \textbf{Coeur}.\\
+L'objectif de cette étude sera de connaître les bonnes habitudes
+alimentaires à adopter pour se prevenir d'une maladie coronarienne.
+\newpage \tableofcontents \newpage \#\# Présentation de la base de
+donnée
+
+Notre table de données contient 337 individus et 15 variables qui sont
+
+\begin{itemize}
+\item \textbf{Id} : l'identifiant du sujet. \
+\item   \textbf{DateEntrée} et \textbf{Date de sortie} : les dates d’entrée et de sortie de l’étude. \
+\item   \textbf{Date Naissance} : la date de naissance. \
+\item   \textbf{Statut} : si la sortie de l’enquête est due à une maladie coronarienne de cœur, alors le type de maladie est indiqué (la signification du code n’est pas précisée ici). Si l’individu est sain à la sortie  de l’enquête, alors le code vaut 0.\
+\item   \textbf{Emploi} : le type d’emploi.\
+\item   \textbf{MoisEnquête} : le mois (1= Janvier, 12= Décembre) où l’individu a répondu à l’enquête sur ses pratiques alimentaires.\
+\item   \textbf{Taille/Poids} : la taille et le poids de l'individu (en cm et en kg).\
+\item   \textbf{Graisse} : la quantité moyenne de graisse ingérée par jour (g/jour).\
+\item   \textbf{Fibres} : la quantité moyenne de fibres ingérée par jour (g/jour).\
+\item   \textbf{Consommation} : la quantité de calories(/100) ingérée par jour.\
+\item   \textbf{hauteConsomation} : une variable binaire, recodage de la variable consommation.\
+\item   \textbf{MCC} : une variable binaire, recodage de la variable statut (1=MCC, 0=pas de MCC). \
+\end{itemize}
+
+Nous avons également rajouté la variable \(\textbf{IMC}\) en divisant le
+poids par la taille au carrée pour faire un lien entre la condition
+physique et la maladie du coeur car le poids ou la taille tout seul ne
+suffisent pas pour savoir si une personne est en bonne santé ou en
+surpoids.\\
+
+Nous nous sommes également rendu compte qu'il y avait des erreurs dans
+le recodage de la variables \textbf{statut}. En effet, certains
+individus avaient contracté une maladie du coeur, mais la variable
+recodage \textbf{MCC} ne l'avait pas pris en compte nous avons donc
+rectifié ça. Nous avons aussi remarqué que certaines variables
+qualitatives étaient en \textbf{numeric}, ce qui posera problème pour
+notre étude. Nous les recodons donc en \textbf{factor}.\\
+Nous observons enfin que la table de données contient des valeurs
+manquantes. Nous enlevons donc chaque ligne qui contient au moins une
+valeur manquante. Nous passons donc de 337 à 328 individus.\\
+
+Regardons les 5 premières lignes de notre table de données :\\
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{coeur <-}\StringTok{ }\KeywordTok{readRDS}\NormalTok{(}\StringTok{'data/my_data_frame.rds'}\NormalTok{)}
+\NormalTok{coeur <-coeur}\OperatorTok{%>%}\KeywordTok{drop_na}\NormalTok{()}
+\NormalTok{coeur <-coeur}\OperatorTok{%>%}\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(}\OperatorTok{-}\NormalTok{X1)}
+\NormalTok{coeur}\OperatorTok{$}\NormalTok{statut<-}\KeywordTok{as.factor}\NormalTok{(coeur}\OperatorTok{$}\NormalTok{statut)}
+\NormalTok{coeur}\OperatorTok{$}\NormalTok{emploi<-}\KeywordTok{as.factor}\NormalTok{(coeur}\OperatorTok{$}\NormalTok{emploi)}
+\NormalTok{coeur}\OperatorTok{$}\NormalTok{moisEnqu_e<-}\KeywordTok{as.factor}\NormalTok{(coeur}\OperatorTok{$}\NormalTok{moisEnqu_e)}
+\NormalTok{coeur}\OperatorTok{$}\NormalTok{hauteConsomation<-}\KeywordTok{as.factor}\NormalTok{(coeur}\OperatorTok{$}\NormalTok{hauteConsomation)}
+
+\NormalTok{coeur<-}\KeywordTok{mutate}\NormalTok{(coeur,}\DataTypeTok{imc =}\NormalTok{poids }\OperatorTok{/}\NormalTok{(taille}\OperatorTok{/}\DecValTok{100}\NormalTok{)}\OperatorTok{^}\DecValTok{2}\NormalTok{)}
+\NormalTok{coeur<-coeur }\OperatorTok{%>%}\StringTok{ }\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(}\OperatorTok{-}\NormalTok{MCC)}
+\NormalTok{coeur <-}\KeywordTok{mutate}\NormalTok{(coeur,}\DataTypeTok{MCC =}\KeywordTok{case_when}\NormalTok{(}
+\NormalTok{  statut}\OperatorTok{!=}\DecValTok{0}\OperatorTok{~}\DecValTok{1}\NormalTok{,}
+  \OtherTok{TRUE}\OperatorTok{~}\DecValTok{0}\NormalTok{))}
+
+\KeywordTok{pander}\NormalTok{(}\KeywordTok{head}\NormalTok{(coeur))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}cccccc@{}}
+\caption{Table continues below}\tabularnewline
+\toprule
+\begin{minipage}[b]{0.07\columnwidth}\centering
+id\strut
+\end{minipage} & \begin{minipage}[b]{0.15\columnwidth}\centering
+dateEntree\strut
+\end{minipage} & \begin{minipage}[b]{0.15\columnwidth}\centering
+dateSortie\strut
+\end{minipage} & \begin{minipage}[b]{0.19\columnwidth}\centering
+dateNaissance\strut
+\end{minipage} & \begin{minipage}[b]{0.10\columnwidth}\centering
+statut\strut
+\end{minipage} & \begin{minipage}[b]{0.16\columnwidth}\centering
+emploi\strut
+\end{minipage}\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+\begin{minipage}[b]{0.07\columnwidth}\centering
+id\strut
+\end{minipage} & \begin{minipage}[b]{0.15\columnwidth}\centering
+dateEntree\strut
+\end{minipage} & \begin{minipage}[b]{0.15\columnwidth}\centering
+dateSortie\strut
+\end{minipage} & \begin{minipage}[b]{0.19\columnwidth}\centering
+dateNaissance\strut
+\end{minipage} & \begin{minipage}[b]{0.10\columnwidth}\centering
+statut\strut
+\end{minipage} & \begin{minipage}[b]{0.16\columnwidth}\centering
+emploi\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.07\columnwidth}\centering
+102\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\centering
+17/01/76\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\centering
+02/12/86\strut
+\end{minipage} & \begin{minipage}[t]{0.19\columnwidth}\centering
+02/03/39\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
+0\strut
+\end{minipage} & \begin{minipage}[t]{0.16\columnwidth}\centering
+Driver\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.07\columnwidth}\centering
+59\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\centering
+16/07/73\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\centering
+05/07/82\strut
+\end{minipage} & \begin{minipage}[t]{0.19\columnwidth}\centering
+05/07/12\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
+0\strut
+\end{minipage} & \begin{minipage}[t]{0.16\columnwidth}\centering
+Driver\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.07\columnwidth}\centering
+126\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\centering
+17/03/70\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\centering
+20/03/84\strut
+\end{minipage} & \begin{minipage}[t]{0.19\columnwidth}\centering
+24/12/19\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
+13\strut
+\end{minipage} & \begin{minipage}[t]{0.16\columnwidth}\centering
+Conductor\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.07\columnwidth}\centering
+16\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\centering
+16/05/69\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\centering
+31/12/69\strut
+\end{minipage} & \begin{minipage}[t]{0.19\columnwidth}\centering
+17/09/06\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
+3\strut
+\end{minipage} & \begin{minipage}[t]{0.16\columnwidth}\centering
+Driver\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.07\columnwidth}\centering
+247\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\centering
+16/03/68\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\centering
+25/06/79\strut
+\end{minipage} & \begin{minipage}[t]{0.19\columnwidth}\centering
+10/07/18\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
+13\strut
+\end{minipage} & \begin{minipage}[t]{0.16\columnwidth}\centering
+Bank worker\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.07\columnwidth}\centering
+272\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\centering
+16/03/69\strut
+\end{minipage} & \begin{minipage}[t]{0.15\columnwidth}\centering
+13/12/73\strut
+\end{minipage} & \begin{minipage}[t]{0.19\columnwidth}\centering
+06/03/20\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
+3\strut
+\end{minipage} & \begin{minipage}[t]{0.16\columnwidth}\centering
+Bank worker\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{longtable}[]{@{}cccccc@{}}
+\caption{Table continues below}\tabularnewline
+\toprule
+\begin{minipage}[b]{0.15\columnwidth}\centering
+moisEnqu\_e\strut
+\end{minipage} & \begin{minipage}[b]{0.17\columnwidth}\centering
+consommation\strut
+\end{minipage} & \begin{minipage}[b]{0.10\columnwidth}\centering
+taille\strut
+\end{minipage} & \begin{minipage}[b]{0.09\columnwidth}\centering
+poids\strut
+\end{minipage} & \begin{minipage}[b]{0.12\columnwidth}\centering
+graisse\strut
+\end{minipage} & \begin{minipage}[b]{0.12\columnwidth}\centering
+fibre\strut
+\end{minipage}\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+\begin{minipage}[b]{0.15\columnwidth}\centering
+moisEnqu\_e\strut
+\end{minipage} & \begin{minipage}[b]{0.17\columnwidth}\centering
+consommation\strut
+\end{minipage} & \begin{minipage}[b]{0.10\columnwidth}\centering
+taille\strut
+\end{minipage} & \begin{minipage}[b]{0.09\columnwidth}\centering
+poids\strut
+\end{minipage} & \begin{minipage}[b]{0.12\columnwidth}\centering
+graisse\strut
+\end{minipage} & \begin{minipage}[b]{0.12\columnwidth}\centering
+fibre\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.15\columnwidth}\centering
+1\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\centering
+22.86\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
+181.6\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\centering
+88.18\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+9.168\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+1.4\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.15\columnwidth}\centering
+7\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\centering
+23.88\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
+166\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\centering
+58.74\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+9.651\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+0.935\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.15\columnwidth}\centering
+3\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\centering
+24.95\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
+152.4\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\centering
+49.9\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+11.25\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+1.248\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.15\columnwidth}\centering
+5\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\centering
+22.24\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
+171.2\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\centering
+89.4\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+7.578\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+1.557\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.15\columnwidth}\centering
+3\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\centering
+18.54\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
+177.8\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\centering
+97.07\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+9.147\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+0.991\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.15\columnwidth}\centering
+3\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\centering
+20.31\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
+175.3\strut
+\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\centering
+61.01\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+8.536\strut
+\end{minipage} & \begin{minipage}[t]{0.12\columnwidth}\centering
+0.765\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{longtable}[]{@{}ccc@{}}
+\toprule
+\begin{minipage}[b]{0.24\columnwidth}\centering
+hauteConsomation\strut
+\end{minipage} & \begin{minipage}[b]{0.10\columnwidth}\centering
+imc\strut
+\end{minipage} & \begin{minipage}[b]{0.10\columnwidth}\centering
+MCC\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.24\columnwidth}\centering
+\textless=2750 KCals\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
+26.74\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
+0\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.24\columnwidth}\centering
+\textless=2750 KCals\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
+21.32\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
+0\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.24\columnwidth}\centering
+\textless=2750 KCals\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
+21.48\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
+1\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.24\columnwidth}\centering
+\textless=2750 KCals\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
+30.51\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
+1\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.24\columnwidth}\centering
+\textless=2750 KCals\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
+30.71\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
+1\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.24\columnwidth}\centering
+\textless=2750 KCals\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
+19.86\strut
+\end{minipage} & \begin{minipage}[t]{0.10\columnwidth}\centering
+1\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+Remarquons que cet ensemble d'individu est bien une cohorte car nous
+avons relevé certaines covariables et les trois données fondamentales
+qui sont, la date d'entrée dans l'étude, la date de sortie dans l'étude
+et le cause de sortie dans l'étude. Nous pouvons ajouter que les
+covariables utilisées dans l'étude sont fixe.
+
+\newpage
+
+\hypertarget{statistique-descriptive}{%
+\section{Statistique descriptive}\label{statistique-descriptive}}
+
+Notre jeu de donnée présente 5 variables quantitatives et 9 variables
+qualitatives.
+
+Faisons un sommaire des variables quantitatives :
+
+\begin{longtable}[]{@{}ccccc@{}}
+\toprule
+\begin{minipage}[b]{0.17\columnwidth}\centering
+consommation\strut
+\end{minipage} & \begin{minipage}[b]{0.17\columnwidth}\centering
+fibre\strut
+\end{minipage} & \begin{minipage}[b]{0.17\columnwidth}\centering
+graisse\strut
+\end{minipage} & \begin{minipage}[b]{0.17\columnwidth}\centering
+taille\strut
+\end{minipage} & \begin{minipage}[b]{0.18\columnwidth}\centering
+poids\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.17\columnwidth}\centering
+Min. :17.48\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\centering
+Min. :0.605\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\centering
+Min. : 7.26\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\centering
+Min. :152.4\strut
+\end{minipage} & \begin{minipage}[t]{0.18\columnwidth}\centering
+Min. : 46.72\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.17\columnwidth}\centering
+1st Qu.:25.46\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\centering
+1st Qu.:1.367\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\centering
+1st Qu.:11.15\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\centering
+1st Qu.:168.9\strut
+\end{minipage} & \begin{minipage}[t]{0.18\columnwidth}\centering
+1st Qu.: 64.64\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.17\columnwidth}\centering
+Median :28.11\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\centering
+Median :1.679\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\centering
+Median :12.60\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\centering
+Median :173.0\strut
+\end{minipage} & \begin{minipage}[t]{0.18\columnwidth}\centering
+Median : 72.80\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.17\columnwidth}\centering
+Mean :28.35\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\centering
+Mean :1.723\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\centering
+Mean :12.76\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\centering
+Mean :173.4\strut
+\end{minipage} & \begin{minipage}[t]{0.18\columnwidth}\centering
+Mean : 72.40\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.17\columnwidth}\centering
+3rd Qu.:31.10\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\centering
+3rd Qu.:1.939\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\centering
+3rd Qu.:14.02\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\centering
+3rd Qu.:177.8\strut
+\end{minipage} & \begin{minipage}[t]{0.18\columnwidth}\centering
+3rd Qu.: 79.44\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.17\columnwidth}\centering
+Max. :43.96\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\centering
+Max. :5.351\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\centering
+Max. :21.63\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\centering
+Max. :190.5\strut
+\end{minipage} & \begin{minipage}[t]{0.18\columnwidth}\centering
+Max. :106.14\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+Les individus mangent en moyenne 2835 calories par jours. Ils ingèrent
+de plus 12.76 grammes de gras par jour, mesurent 173 cm et pèsent 72.40
+kilo-gramme en moyenne.\\
+
+Faisons maintenant un sommaire des variables quantitatives :
+
+\begin{longtable}[]{@{}cccc@{}}
+\toprule
+\begin{minipage}[b]{0.17\columnwidth}\centering
+statut\strut
+\end{minipage} & \begin{minipage}[b]{0.22\columnwidth}\centering
+emploi\strut
+\end{minipage} & \begin{minipage}[b]{0.17\columnwidth}\centering
+moisEnqu\_e\strut
+\end{minipage} & \begin{minipage}[b]{0.23\columnwidth}\centering
+hauteConsomation\strut
+\end{minipage}\tabularnewline
+\midrule
+\endhead
+\begin{minipage}[t]{0.17\columnwidth}\centering
+0 :252\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\centering
+Bank worker:147\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\centering
+11 : 39\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\centering
+\textless=2750 KCals:149\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.17\columnwidth}\centering
+3 : 18\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\centering
+Conductor : 83\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\centering
+1 : 37\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\centering
+\textgreater2750 KCals :179\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.17\columnwidth}\centering
+13 : 18\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\centering
+Driver : 98\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\centering
+3 : 37\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\centering
+NA\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.17\columnwidth}\centering
+12 : 12\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\centering
+NA\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\centering
+2 : 34\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\centering
+NA\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.17\columnwidth}\centering
+5 : 10\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\centering
+NA\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\centering
+5 : 34\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\centering
+NA\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.17\columnwidth}\centering
+1 : 8\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\centering
+NA\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\centering
+12 : 33\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\centering
+NA\strut
+\end{minipage}\tabularnewline
+\begin{minipage}[t]{0.17\columnwidth}\centering
+(Other): 10\strut
+\end{minipage} & \begin{minipage}[t]{0.22\columnwidth}\centering
+NA\strut
+\end{minipage} & \begin{minipage}[t]{0.17\columnwidth}\centering
+(Other):114\strut
+\end{minipage} & \begin{minipage}[t]{0.23\columnwidth}\centering
+NA\strut
+\end{minipage}\tabularnewline
+\bottomrule
+\end{longtable}
+
+Il y a 2 fois plus de \(\textbf{Bank worker}\) que de
+\(\textbf{Conductor}\) ou de \(\textbf{Driver}\). Il y a \(149\)
+personnes qui mangent moins de \(2750\) calories par jours et \(179\)
+personnes qui en mangent plus.\\
+
+Regardons désormais la corrélation entre les variables quantitatives :\\
+
+\begin{center}\includegraphics{mark_files/figure-latex/unnamed-chunk-5-1} \end{center}
+
+Nous observons que toutes les variables sont corrélées positivement. ~
+
+La variable \textbf{consommation} est très corrélée avec la variable
+\textbf{graisse} mais elle est très peu corrélée avec la variable
+\textbf{taille}. La variable \textbf{taille} est peu corrélée avec la
+variable \textbf{graisse}.\\
+
+Nous allons maintenant regarder le lien entre la maladie et le secteur
+d'activité.\\
+
+\begin{center}\includegraphics{mark_files/figure-latex/unnamed-chunk-6-1} \end{center}
+
+Nous observons que la proportion de conducteur est plus élevée chez les
+malades que chez les non malades.
+
+Nous allons maintenant regarder le lien entre l'IMC et les maladies
+coronariennes.
+
+\begin{center}\includegraphics{mark_files/figure-latex/unnamed-chunk-7-1} \end{center}
+
+Nous remarquons que la mediane de l'IMC du groupe de personnes malades
+est à peine plus basse que la médiane pour le groupe de personnes non
+malade. Une simple analyse descriptive ne suffit pas pour obtenir des
+résultats bien concluants, nous allons continuer avec des méthodes plus
+poussées. Nous commencerons par des régréssions logistiques.
+
+\hypertarget{etude-de-la-consommation-de-fibre}{%
+\section{Etude de la consommation de
+fibre}\label{etude-de-la-consommation-de-fibre}}
+
+Nous allons commencer par une régréssion logistique qui nous permettera
+d'expliquer la variable \(\textbf{MCC}\) en fonction de certaines
+covariables. Rappelons que dans la régréssion logistique ce n'est pas la
+réponse binaire qui est modélisé mais la probabilité de réalisation
+d'une des deux modalités (avoir une maladie coronarienne ou non).\\
+
+Nous allons commencer par regarder le meilleur modèle. Nous enlevons la
+\(\textbf{taille}\) et le \(\textbf{poids}\) pour laisser
+\(\textbf{imc}\) car elles sont très fortement corrélées. Nous avons
+tout d'abord voulu comparer en comparant les AIC avec stepAIC.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{coeurlogbin<-coeur}\OperatorTok{%>%}\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(}\OperatorTok{-}\NormalTok{id,}\OperatorTok{-}\NormalTok{dateEntree,}\OperatorTok{-}\NormalTok{dateSortie,}\OperatorTok{-}\NormalTok{dateNaissance,}\OperatorTok{-}\NormalTok{statut,}
+                                   \OperatorTok{-}\NormalTok{poids,}\OperatorTok{-}\NormalTok{taille)}
+\NormalTok{res<-}\KeywordTok{glm}\NormalTok{(MCC}\OperatorTok{~}\NormalTok{.,}\DataTypeTok{family =} \KeywordTok{binomial}\NormalTok{(logit),}\DataTypeTok{data=}\NormalTok{coeurlogbin)}
+\KeywordTok{stepAIC}\NormalTok{(res)}
+\end{Highlighting}
+\end{Shaded}
+
+Le modèle ayant le plus faible AIC est le suivant :
+\[y=\mu +  \beta_1 fibre\]\\
+
+Nous avons également utilisé les p-values pour trouver le meilleur
+modèle en enlevant à la main petit à petit les variables les moins
+significatives et nous obtenons encore le même modèle.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{coeurlogbin<-coeur}\OperatorTok{%>%}\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(}\OperatorTok{-}\NormalTok{id,}\OperatorTok{-}\NormalTok{dateEntree,}\OperatorTok{-}\NormalTok{dateSortie,}\OperatorTok{-}\NormalTok{dateNaissance,}\OperatorTok{-}\NormalTok{statut,}
+                                   \OperatorTok{-}\NormalTok{poids,}\OperatorTok{-}\NormalTok{taille)}
+\NormalTok{res<-}\KeywordTok{glm}\NormalTok{(MCC}\OperatorTok{~}\NormalTok{.}\OperatorTok{-}\NormalTok{emploi}\OperatorTok{-}\NormalTok{moisEnqu_e}\OperatorTok{-}\NormalTok{consommation}\DecValTok{-1}\OperatorTok{-}\NormalTok{hauteConsomation}\OperatorTok{-}\NormalTok{imc}\OperatorTok{-}\NormalTok{graisse,}
+         \DataTypeTok{family =} \KeywordTok{binomial}\NormalTok{(logit),}\DataTypeTok{data=}\NormalTok{coeurlogbin)}
+\KeywordTok{summary}\NormalTok{(res)}
+\end{Highlighting}
+\end{Shaded}
+
+Regardons donc la relation entre les maladies coronariennes et la
+consommation de fibre.\\
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggplot}\NormalTok{(coeurlogbin,}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{coeurlogbin}\OperatorTok{$}\NormalTok{fibre,}\DataTypeTok{y=}\NormalTok{coeurlogbin}\OperatorTok{$}\NormalTok{MCC))}\OperatorTok{+}\KeywordTok{geom_point}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{mark_files/figure-latex/unnamed-chunk-10-1.pdf}
+
+Nous observons que les personnes mangeant plus de 2g de fibre par jour
+sont moins malades.\\
+
+Nous voulons faire une régression logistique, nous allons donc vérifier
+les conditions d'application. Il est recommandé d'avoir en pratique 10
+fois plus d'évenements que de paramètres dans le modèle. Nous allons
+utiliser ici 2 paramétres ( en comptant l'intercept) nous devrions donc
+avoir au moins 20 malades.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{table}\NormalTok{(coeurlogbin}\OperatorTok{$}\NormalTok{MCC)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##   0   1 
+## 252  76
+\end{verbatim}
+
+Nous avons 76 malades nous pouvons donc continuer.\\
+
+Il faut maintenant vérifier que nous ne sommes pas dans le cas de
+surdipersion c'est à dire qu'il ne faut pas que la dispersion réelle des
+données soit supérieure à celle prévue par la théorie car dans ce cas
+l'erreur standard des paramètres est sous-estimée ce qui peut conduire à
+des p-valeurs très faible et donner des conclusions erronnées. Evaluons
+donc s'il y a ou non une surdispersion :
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{reslog<-}\KeywordTok{glm}\NormalTok{(MCC}\OperatorTok{~}\NormalTok{fibre,}\DataTypeTok{family =} \KeywordTok{binomial}\NormalTok{(logit),}\DataTypeTok{data=}\NormalTok{coeurlogbin)}
+\KeywordTok{summary}\NormalTok{(reslog)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## glm(formula = MCC ~ fibre, family = binomial(logit), data = coeurlogbin)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -0.9166  -0.7624  -0.7002  -0.5372   1.9817  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(>|z|)  
+## (Intercept)  -0.3413     0.4588  -0.744   0.4569  
+## fibre        -0.5101     0.2678  -1.905   0.0568 .
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 355.11  on 327  degrees of freedom
+## Residual deviance: 351.12  on 326  degrees of freedom
+## AIC: 355.12
+## 
+## Number of Fisher Scoring iterations: 4
+\end{verbatim}
+
+\[\frac{deviance residuelle}{nddl}=\frac{351.12}{326}=1.08\] nous
+pouvons ainsi considérer qu'il n'y a pas surdispersion.\\
+
+Nous pouvons donc maintenant utiliser la régression logistique et faire
+des interprétations :\\
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{reslog<-}\KeywordTok{glm}\NormalTok{(MCC}\OperatorTok{~}\NormalTok{fibre}\DecValTok{-1}\NormalTok{,}\DataTypeTok{family =} \KeywordTok{binomial}\NormalTok{(logit),}\DataTypeTok{data=}\NormalTok{coeurlogbin)}
+\KeywordTok{summary}\NormalTok{(reslog)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## glm(formula = MCC ~ fibre - 1, family = binomial(logit), data = coeurlogbin)
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.0030  -0.7823  -0.6959  -0.4816   2.0741  
+## 
+## Coefficients:
+##       Estimate Std. Error z value Pr(>|z|)    
+## fibre -0.70288    0.07799  -9.013   <2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 454.70  on 328  degrees of freedom
+## Residual deviance: 351.66  on 327  degrees of freedom
+## AIC: 353.66
+## 
+## Number of Fisher Scoring iterations: 4
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{confint}\NormalTok{(reslog)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      2.5 %     97.5 % 
+## -0.8604690 -0.5542772
+\end{verbatim}
+
+\[ln \bigg(\frac{odds(Y =1  | fibre = x_1+1)}{odds(Y=1 | fibre = x_1)}\bigg)=\hat{\beta}_{fibre}=-0.70288\]
+Augmenter la consommation de fibre de 1g par jour va multiplier la
+chance d'avoir une maladie coronarienne par au moins
+\(\exp(-0.8604690)=0.43\) et au plus \(\exp(-0.5542772)=0.57\).
+Autrement dit, si nous augmentons notre consommation de fibre de 1g par
+jour nous divisons par au moins (1/0.43)=2.32 l'odds de contracter une
+maladie coronarienne.\\
+Nous pouvons alors conseiller de manger des fibres si nous voulons nous
+prévenir des maladies coronariennes.
+
+\hypertarget{etude-de-la-consommation}{%
+\section{Etude de la consommation}\label{etude-de-la-consommation}}
+
+Nous voulons maintenant étudier la consommation à l'aide d'une
+régression polytomique ordonné. En effet nous aimerions voir ce qui
+influence la consommation de calories des personnes. Nous Nous voulons
+au moins 3 modalités, nous recodons donc la variable
+\(\textbf{consommation}\) pour qu'elle soit qualitative à 3 modalités.
+Nous classons ainsi la consommation en ``faible'', ``moyen'' et
+``élevée''. Nous avons alors bien une relation d'ordre
+\("faible" < "moyen" < "élevée"\) .\\
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{coeur <-}\KeywordTok{mutate}\NormalTok{(coeur,}\DataTypeTok{consom_dec =}\KeywordTok{case_when}\NormalTok{(}
+\NormalTok{  consommation}\OperatorTok{<}\DecValTok{23}\OperatorTok{~}\StringTok{"faible"}\NormalTok{,}
+\NormalTok{  consommation}\OperatorTok{>}\DecValTok{22} \OperatorTok{&}\StringTok{ }\NormalTok{consommation}\OperatorTok{<}\DecValTok{30}\OperatorTok{~}\StringTok{"moyen"}\NormalTok{,}
+\NormalTok{  consommation}\OperatorTok{>}\DecValTok{29} \OperatorTok{~}\StringTok{"élevée"}\NormalTok{))}
+\NormalTok{coeur}\OperatorTok{$}\NormalTok{consom_dec<-}\KeywordTok{as.factor}\NormalTok{(coeur}\OperatorTok{$}\NormalTok{consom_dec)}
+\end{Highlighting}
+\end{Shaded}
+
+Nous faisons un stepAIC pour choisir le meilleur modèle au sens du
+critère \(\textbf{AIC}\).\\
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{coeurlogbin1<-coeur}\OperatorTok{%>%}\NormalTok{dplyr}\OperatorTok{::}\KeywordTok{select}\NormalTok{(}\OperatorTok{-}\NormalTok{id,}\OperatorTok{-}\NormalTok{dateEntree,}\OperatorTok{-}\NormalTok{dateSortie,}\OperatorTok{-}\NormalTok{dateNaissance,}\OperatorTok{-}\NormalTok{statut,}
+                                    \OperatorTok{-}\NormalTok{hauteConsomation,}\OperatorTok{-}\NormalTok{consommation)}
+\NormalTok{modele<-}\KeywordTok{polr}\NormalTok{(consom_dec}\OperatorTok{~}\NormalTok{.,}\DataTypeTok{data=}\NormalTok{coeurlogbin1)}
+\KeywordTok{stepAIC}\NormalTok{(modele)}
+\end{Highlighting}
+\end{Shaded}
+
+Nous obtenons qu'il faut garder \(\textbf{graisse}\) et
+\(\textbf{fibre}\), nous faisons donc la régréssion polytomique ordonné
+selon ces variables.\\
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{modele2<-}\KeywordTok{polr}\NormalTok{(consom_dec}\OperatorTok{~}\NormalTok{graisse}\OperatorTok{+}\NormalTok{fibre,}\DataTypeTok{data=}\NormalTok{coeurlogbin1)}
+\NormalTok{modele2}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Call:
+## polr(formula = consom_dec ~ graisse + fibre, data = coeurlogbin1)
+## 
+## Coefficients:
+##    graisse      fibre 
+## -0.4308596 -0.5959642 
+## 
+## Intercepts:
+## élevée|faible  faible|moyen 
+##     -7.240439     -6.698937 
+## 
+## Residual Deviance: 504.4718 
+## AIC: 512.4718
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{confint}\NormalTok{(modele2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##             2.5 %     97.5 %
+## graisse -0.559942 -0.3106530
+## fibre   -1.099625 -0.1207172
+\end{verbatim}
+
+Notons que la commande \(polyr\) utilisée renvoie l'opposé du
+coefficient \(\beta\) considéré donc nous obtenons les ``vrais''
+résultats suivants : \(\hat{\beta}_{graisse}=0.43\) et
+\(\hat{\beta_{fibre}}=0.59\) avec les intervalles de confiance suivant :
+\(\hat{\beta}_{graisse} \in [0.31,0.56]\) et
+\(\hat{\beta}_{fibre} \in [0.12,1.10]\)
+
+Nous pouvons regarder noter que :
+\[ln \bigg(\frac{odds(Y \leq moyen | graisse = x_1+1, fibre=x_2)}{odds(Y \leq moyen | graisse = x_1, fibre=x_2)}\bigg)=\hat{\beta}_{graisse}\]
+
+A consommation de fibre fixée, augmenter la consommation de graisse de 1
+g/jour va multiplier l'odds de \(Y \leq moyen\) par au moins
+\(exp(0.31)=1.36\) et au plus \(exp(0.56)=1.75\). ~
+
+De plus :\\
+\[ln \bigg(\frac{odds(Y \leq moyen | fibre = x_1+1, graisse=x_2)}{odds(Y \leq moyen | fibre = x_1, graisse=x_2)}\bigg)=\hat{\beta}_{fibre}\]
+
+A consommation de graisse fixée, augmenter la consommation de fibre de 1
+g/jour va multiplier l'odds de \(Y \leq moyen\) par au moins
+\(exp(0.12)=1.12\) et au plus \(exp(1.10)=3\). Ainsi manger plus de
+fibre va augmenter les chances que la personne mange moins de calorie
+dans la journée. Ceci n'est pas surpenant car les fibres sont connus
+pour être rassasiant.\\
+
+Nous avons vu précedemment qu'augmenter sa consommation de fibre était
+une bonne chose pour se prévenir des maladies coronariennes, nous savons
+maintenant que à consommation de graisse fixée la consommation de fibre
+permet également au personne de ne pas manger trop de calories.\\
+
+\hypertarget{uxe9tude-de-lemploi}{%
+\section{Étude de l'emploi}\label{uxe9tude-de-lemploi}}
+
+Nous voulons maintenant étudier le l'emploi à l'aide d'une régression
+polytomique non ordonné. En effet nous aimerions voir ce qui influence
+la préférence de choisir un type d'emploi par apport aux autres. La
+variable emploi est composée de 3 modalités, qui sont : \(conductor\),
+\(bank worker\) et \(driver\).
+
+Nous faisons un stepAIC pour choisir le meilleur modèle au sens du
+critère AIC
+
+Nous obtenons qu'il faut garder taille et poids. Nous faisons donc la
+régréssion polytomique non ordonné selon ces variables.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{modele4<-}\KeywordTok{multinom}\NormalTok{(emploi}\OperatorTok{~}\NormalTok{poids}\OperatorTok{+}\NormalTok{taille,}\DataTypeTok{data=}\NormalTok{coeurlogbin1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # weights:  12 (6 variable)
+## initial  value 360.344831 
+## iter  10 value 302.773746
+## iter  20 value 301.538107
+## final  value 301.526738 
+## converged
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{modele4}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Call:
+## multinom(formula = emploi ~ poids + taille, data = coeurlogbin1)
+## 
+## Coefficients:
+##           (Intercept)       poids     taille
+## Conductor    34.13104 -0.07620753 -0.1694273
+## Driver       22.11401 -0.01424113 -0.1231291
+## 
+## Residual Deviance: 603.0535 
+## AIC: 615.0535
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{confint}\NormalTok{(modele4)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## , , Conductor
+## 
+##                  2.5 %      97.5 %
+## (Intercept) 30.3445677 37.91750699
+## poids       -0.1114239 -0.04099117
+## taille      -0.1959546 -0.14290007
+## 
+## , , Driver
+## 
+##                   2.5 %      97.5 %
+## (Intercept) 16.95239383 27.27563010
+## poids       -0.04357888  0.01509662
+## taille      -0.15673368 -0.08952445
+\end{verbatim}
+
+Bank worker est la modalité de référence pour emploi.\\
+
+\[\hat{\beta}_{poids|conductor}=ln \bigg(\frac{\frac{P(conductor| poids = x_1+1, taille=x_2)}{P(Bank worker | poids = x_1+1, taille=x_2)}}{\frac{P(conductor | poids = x_1, taille=x_2)}{P(Bank worker | poids = x_1,taille=x_2)}}\bigg)=-0.07620753 \]
+
+À taille fixé, un poids de 1kg en plus va multiplier par au moins
+\(exp(-0.1114239)=0.8945595\) et au plus\(exp( -0.04099117)=0.9598376\)
+la préférence de conductor par rapport à Bank worker.\\
+
+\[\hat{\beta}_{taille|conductor}=ln \bigg(\frac{\frac{P(conductor| taille = x_1+1, poids=x_2)}{P(Bank worker | taille = x_1+1, poids=x_2)}}{\frac{P(conductor | taille = x_1, poids=x_2)}{P(Bank worker | taille = x_1,poids=x_2)}}\bigg)=-0.1694273\]
+
+À poids fixé, une taille qui augmente de 1cm va multiplier par au moins
+\(exp( -0.1959546)=\) et au plus \(exp( -0.14290007)=0.8668407\) la
+préférence de conductor par rapport à Bank worker.\\
+
+\[\hat{\beta}_{taille|driver}=ln \bigg(\frac{\frac{P(driver| taille = x_1+1, poids=x_2)}{P(Bank worker | taille = x_1+1, poids=x_2)}}{\frac{P(driver | taille = x_1, poids=x_2)}{P(Bank worker | taille = x_1,poids=x_2)}}\bigg)=-0.1231291\]
+
+À poids fixé, une taille qui augmente de 1cm va multiplier par au moins
+\(exp( -0.15673368)=0.8549317\) et au plus
+\(exp( -0.08952445)=0.9143659\) la préférence de driver par rapport à
+Bank worker.\\
+
+Ainsi, la taille et le poids ont un effet sur le métier que l'on va
+choisir.
+
+\hypertarget{uxe9tude-de-lincidence-instantannuxe9e-de-la-maladie}{%
+\section{Étude de l'incidence instantannée de la
+maladie}\label{uxe9tude-de-lincidence-instantannuxe9e-de-la-maladie}}
+
+Dans cette partie, nous allons chercher à répondre à la problématique
+suivante : à une date donnée, quelle sera le taux de nouveaux malades
+dans la population étudiée ?
+
+Nous allons désormais nettoyer la base de données et faire des
+transformations de format des variables pour pouvoir utiliser le modèle
+de Cox. Les variables qui contiennent une date ( date entrée, date
+sortie et date de naissance) sont de type ``charactère'' nous allons
+donc dans un premier temps les convertir en type ``Date''.
+
+Ensuite, la fonction qui exécute le modèle de cox à besoin de valeurs
+numériques représentant les dates. Sous R, chaque date est repésentée
+par un nombre de jour à partir d'une date d'origine : le 1 janvier 1970.
+Nous allons donc créer une variable qui récupérera ce nombre pour chaque
+date correspondant à chaques individus.
+
+Nous pouvons désormais faire nos analyse avec le modèle de Cox. Pour une
+première analyse, nous estimerons notre modèle en prenant en compte
+toute les covariables possible présentent dans la table de données. Mais
+le modèle de risques proportionnels de Cox fait plusieurs hypothèses.
+Ainsi, il est important d'évaluer si un tel modèle ajusté décrit
+correctement les données.
+
+Ici, nous allons discuter de trois types de diagonostiques pour le
+modèle de Cox:
+
+\hypertarget{duxe9tection-de-la-non-linuxe9arituxe9-des-variables}{%
+\subsection{Détection de la non-linéarité des
+variables}\label{duxe9tection-de-la-non-linuxe9arituxe9-des-variables}}
+
+Souvent, nous supposons que les covariables continues ont une forme
+linéaire. Cependant, cette hypothèse doit être vérifiée. Le traçage des
+résidus de Martingale par rapport à des covariables continues est une
+approche courante utilisée pour détecter la non - linéarité ou, en
+d'autres termes, pour évaluer la forme fonctionnelle d'une covariable.
+Pour une covariable continue donnée, les modèles du graphique peuvent
+suggérer que la variable n'est pas correctement ajustée.
+
+La non-linéarité n'est pas un problème pour les variables catégorielles,
+nous n'examinons donc que les graphiques des résidus de martingale par
+rapport à une variable continue. Testons avec le poids :
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{survie=}\KeywordTok{Surv}\NormalTok{(coeur2}\OperatorTok{$}\NormalTok{date_entree_num,coeur2}\OperatorTok{$}\NormalTok{date_sortie_num,coeur2}\OperatorTok{$}\NormalTok{MCC)}
+\NormalTok{res=}\KeywordTok{coxph}\NormalTok{(survie}\OperatorTok{~}\NormalTok{fibre}\OperatorTok{+}\NormalTok{taille}\OperatorTok{+}\NormalTok{poids}\OperatorTok{+}\NormalTok{consommation}\OperatorTok{+}
+\StringTok{            }\NormalTok{emploi}\OperatorTok{+}\NormalTok{graisse,}\DataTypeTok{id=}\NormalTok{id,}\DataTypeTok{data=}\NormalTok{coeur2)}
+\NormalTok{mresids <-}\StringTok{ }\KeywordTok{residuals}\NormalTok{( res, }\DataTypeTok{type=}\StringTok{"martingale"}\NormalTok{ )}
+\NormalTok{lmfit <-}\StringTok{ }\KeywordTok{lm}\NormalTok{(poids}\OperatorTok{~}\NormalTok{taille}\OperatorTok{+}\NormalTok{consommation}\OperatorTok{+}\NormalTok{graisse}\OperatorTok{+}\NormalTok{fibre,}\DataTypeTok{data=}\NormalTok{coeur2 )}
+\NormalTok{rbili <-}\StringTok{ }\NormalTok{lmfit}\OperatorTok{$}\NormalTok{resid}
+\NormalTok{ord <-}\StringTok{ }\KeywordTok{order}\NormalTok{( rbili )}
+\NormalTok{mresids <-}\StringTok{ }\NormalTok{mresids[ ord ]}
+\KeywordTok{plot}\NormalTok{( rbili, mresids )}
+\KeywordTok{lines}\NormalTok{( }\KeywordTok{smooth.spline}\NormalTok{( rbili, mresids, }\DataTypeTok{df=}\DecValTok{6}\NormalTok{ ), }\DataTypeTok{col=}\StringTok{"red"}\NormalTok{, }\DataTypeTok{lwd=}\DecValTok{2}\NormalTok{ )}
+\KeywordTok{lines}\NormalTok{( rbili, }\KeywordTok{fitted}\NormalTok{(}\KeywordTok{lm}\NormalTok{( mresids }\OperatorTok{~}\StringTok{ }\NormalTok{rbili )), }\DataTypeTok{col=}\StringTok{"blue"}\NormalTok{, }\DataTypeTok{lwd=}\DecValTok{2}\NormalTok{ )}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{center}\includegraphics{mark_files/figure-latex/unnamed-chunk-21-1} \end{center}
+
+Il semble que le poids soit linéaire. Maintenant testons avec la
+variable fibre
+
+\begin{center}\includegraphics{mark_files/figure-latex/unnamed-chunk-22-1} \end{center}
+
+On distingue clairement 2 groupes de résidus et la courbe varie un peu.
+On va appliquer une transformation logarithme à cette variable :
+
+\begin{center}\includegraphics{mark_files/figure-latex/unnamed-chunk-23-1} \end{center}
+
+On voit que c'est déja un peu mieux. On appliquera le logarithme à fibre
+dans nos modèles. Testons la consommation
+
+\begin{center}\includegraphics{mark_files/figure-latex/unnamed-chunk-24-1} \end{center}
+
+Il n'y a pas besoin d'appliquer de transformations, les résidus ne sont
+pas clairement entassé comme l'exemple fibre.\\
+Testons pour graisse :
+
+\begin{center}\includegraphics{mark_files/figure-latex/unnamed-chunk-25-1} \end{center}
+
+Comme précédemment, nous n'avons pas besoin d'appliquer de
+transformation.\\
+Testons désormais la taille :
+
+\begin{center}\includegraphics{mark_files/figure-latex/unnamed-chunk-26-1} \end{center}
+
+Essayons de voir ce qu'il se passe lorsque nous appliquons le logarithme
+:
+
+\begin{center}\includegraphics{mark_files/figure-latex/unnamed-chunk-27-1} \end{center}
+
+On la courbe parait plus stable. On fera donc une transformation
+logarithme sur la variable taille.
+
+\hypertarget{examiner-les-observations-influentes-ou-les-valeurs-aberrantes.}{%
+\subsection{Examiner les observations influentes (ou les valeurs
+aberrantes).}\label{examiner-les-observations-influentes-ou-les-valeurs-aberrantes.}}
+
+Pour tester des observations influentes ou des valeurs aberrantes, nous
+pouvons utiliser les valeurs \(dfbeta\). Le principe est de comparer le
+coefficient de une variable donnée lorsque un point donnée participe ou
+pas à la régression. On mesure l'influence d'un point sur le coefficient
+estimé.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{ggcoxdiagnostics}\NormalTok{(res, }\DataTypeTok{type =} \StringTok{"dfbeta"}\NormalTok{,}
+                 \DataTypeTok{linear.predictions =} \OtherTok{FALSE}\NormalTok{, }\DataTypeTok{ggtheme =} \KeywordTok{theme_bw}\NormalTok{())}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{mark_files/figure-latex/unnamed-chunk-28-1.pdf}
+
+Nous voyons que que la comparaison des valeurs les plus élevées aux
+coefficients de régression suggère qu'aucune des observations n'est
+terriblement influente individuellement.
+
+\hypertarget{test-de-lhypothuxe8se-des-risques-proportionnels.}{%
+\subsection{Test de l'hypothèse des risques
+proportionnels.}\label{test-de-lhypothuxe8se-des-risques-proportionnels.}}
+
+Regardons désormais si l'hypothèse d'indépendance du temps des formes
+multiplicatives et des covariables est vérifiée. L'hypothèse des risques
+proportionnels peut être vérifiée à l'aide de tests statistiques et de
+diagnostics graphiques basés sur les résidus de Schoenfeld.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{res=}\KeywordTok{coxph}\NormalTok{(survie}\OperatorTok{~}\KeywordTok{log}\NormalTok{(fibre)}\OperatorTok{+}\KeywordTok{log}\NormalTok{(taille)}\OperatorTok{+}\NormalTok{poids}\OperatorTok{+}\NormalTok{consommation}\OperatorTok{+}
+\StringTok{            }\NormalTok{emploi}\OperatorTok{+}\NormalTok{graisse,}\DataTypeTok{id=}\NormalTok{id,}\DataTypeTok{data=}\NormalTok{coeur2)}
+\NormalTok{res.c=}\KeywordTok{cox.zph}\NormalTok{(res)}
+\NormalTok{res.c}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##               chisq df     p
+## log(fibre)   0.0159  1 0.900
+## log(taille)  0.0155  1 0.901
+## poids        0.0730  1 0.787
+## consommation 2.9173  1 0.088
+## emploi       4.2252  2 0.121
+## graisse      1.5216  1 0.217
+## GLOBAL       9.3482  7 0.229
+\end{verbatim}
+
+Le test conduit à ne pas rejeter cette hypothèse au seuil de \(5\%\) :
+aucune covariable n'a un effet dépendant du temps.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ res=}\KeywordTok{coxph}\NormalTok{(survie}\OperatorTok{~}\KeywordTok{log}\NormalTok{(fibre)}\OperatorTok{+}\KeywordTok{log}\NormalTok{(taille)}\OperatorTok{+}\NormalTok{poids}\OperatorTok{+}\NormalTok{emploi}\OperatorTok{+}
+\StringTok{             }\NormalTok{graisse,}\DataTypeTok{id=}\NormalTok{id,}\DataTypeTok{data=}\NormalTok{coeur2)}
+ \KeywordTok{summary}\NormalTok{(res)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Call:
+## coxph(formula = survie ~ log(fibre) + log(taille) + poids + emploi + 
+##     graisse, data = coeur2, id = id)
+## 
+##   n= 328, number of events= 76 
+## 
+##                       coef  exp(coef)   se(coef)      z Pr(>|z|)  
+## log(fibre)      -0.3890266  0.6777163  0.4414874 -0.881   0.3782  
+## log(taille)     -8.1322981  0.0002939  3.5218163 -2.309   0.0209 *
+## poids            0.0002774  1.0002775  0.0139152  0.020   0.9841  
+## emploiConductor  0.0279616  1.0283562  0.3214823  0.087   0.9307  
+## emploiDriver    -0.0623337  0.9395693  0.2985412 -0.209   0.8346  
+## graisse         -0.0484210  0.9527326  0.0571941 -0.847   0.3972  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+##                 exp(coef) exp(-coef) lower .95 upper .95
+## log(fibre)      0.6777163     1.4755 2.853e-01    1.6101
+## log(taille)     0.0002939  3402.6100 2.954e-07    0.2924
+## poids           1.0002775     0.9997 9.734e-01    1.0279
+## emploiConductor 1.0283562     0.9724 5.476e-01    1.9310
+## emploiDriver    0.9395693     1.0643 5.234e-01    1.6867
+## graisse         0.9527326     1.0496 8.517e-01    1.0657
+## 
+## Concordance= 0.617  (se = 0.031 )
+## Likelihood ratio test= 13.15  on 6 df,   p=0.04
+## Wald test            = 13.62  on 6 df,   p=0.03
+## Score (logrank) test = 13.68  on 6 df,   p=0.03
+\end{verbatim}
+
+Le test de Wald teste l'effet d'une covariable avec les autres
+covariable dans le modèle. S'il n'est pas significatif, cela ne veut pas
+dire qu'il ne le serait pas dans le modèle constitué uniquement de cette
+covariable.
+
+Le test de Wald pour la covariable « taille » montre que le coefficient
+correspondant est fortement significatifs au seuil \(5\%\)
+\(p_{values} < 0.05\). Les autres covariables ne modifient pas
+significativement cette incidence lorsque taille est dans le modèle.
+
+Nous sélectionnons les variables pas à pas c'est à dire que nous
+enlèvons celle dont la \(p_{valeur}\) est la plus élevée. Ensuite nous
+refaisons tourner le modèle et nous recommençons jusqu'à obtention de
+toutes les variables significatives.
+
+Nous obtenons le modèle suivant :
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{res=}\KeywordTok{coxph}\NormalTok{(survie}\OperatorTok{~}\KeywordTok{log}\NormalTok{(taille),}\DataTypeTok{id=}\NormalTok{id,}\DataTypeTok{data=}\NormalTok{coeur2)}
+\KeywordTok{summary}\NormalTok{(res)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Call:
+## coxph(formula = survie ~ log(taille), data = coeur2, id = id)
+## 
+##   n= 328, number of events= 76 
+## 
+##                   coef  exp(coef)   se(coef)      z Pr(>|z|)   
+## log(taille) -9.474e+00  7.685e-05  2.904e+00 -3.262  0.00111 **
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+##             exp(coef) exp(-coef) lower .95 upper .95
+## log(taille) 7.685e-05      13013 2.592e-07   0.02279
+## 
+## Concordance= 0.588  (se = 0.03 )
+## Likelihood ratio test= 10.35  on 1 df,   p=0.001
+## Wald test            = 10.64  on 1 df,   p=0.001
+## Score (logrank) test = 10.66  on 1 df,   p=0.001
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{confint}\NormalTok{(res)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                 2.5 %    97.5 %
+## log(taille) -15.16573 -3.781619
+\end{verbatim}
+
+En supposant que toutes les autres covariables sont fixées,
+l'augmentation de la taille de 1cm multiplie l'incidence instentannée de
+la maladie par au moins, \(exp(-15.16573)=2.591834e-07\) et au plus
+\(exp(-3.781619)=0.02278577\).
+
+Auparavant, nous avont constater que dans le modèle constitué de toutes
+les covariables, tous les autres coefficients n'étaient pas
+significatifs au seuil de 5 pourcents. Mais qu'en est t-il si on test
+avec un modèle avec seulement 1 covariable. Regardons ce qui se passe
+pour fibre :
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{res=}\KeywordTok{coxph}\NormalTok{(survie}\OperatorTok{~}\KeywordTok{log}\NormalTok{(fibre),}\DataTypeTok{id=}\NormalTok{id, }\DataTypeTok{data=}\NormalTok{coeur2)}
+\KeywordTok{summary}\NormalTok{(res)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Call:
+## coxph(formula = survie ~ log(fibre), data = coeur2, id = id)
+## 
+##   n= 328, number of events= 76 
+## 
+##               coef exp(coef) se(coef)      z Pr(>|z|)  
+## log(fibre) -0.8061    0.4466   0.3699 -2.179   0.0293 *
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+##            exp(coef) exp(-coef) lower .95 upper .95
+## log(fibre)    0.4466      2.239    0.2163    0.9221
+## 
+## Concordance= 0.569  (se = 0.032 )
+## Likelihood ratio test= 4.71  on 1 df,   p=0.03
+## Wald test            = 4.75  on 1 df,   p=0.03
+## Score (logrank) test = 4.7  on 1 df,   p=0.03
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{confint}\NormalTok{(res)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                2.5 %      97.5 %
+## log(fibre) -1.531084 -0.08111641
+\end{verbatim}
+
+« fibre » a un coefficient significatif au seuil 5\% car
+\(p_{values} =0.0293 < 0.05\).
+
+En supposant que toutes les autres covariables sont fixées,
+l'augmentation de fibre de 1 unité multiplie l'incidence instantannée de
+la maladie par au moins \(exp(-1.531084)=0.2163011\).
+
+Testons maintenant pour la variable graisse
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ res=}\KeywordTok{coxph}\NormalTok{(survie}\OperatorTok{~}\NormalTok{coeur2}\OperatorTok{$}\NormalTok{graisse,}\DataTypeTok{id=}\NormalTok{coeur2}\OperatorTok{$}\NormalTok{id)}
+\KeywordTok{summary}\NormalTok{(res)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Call:
+## coxph(formula = survie ~ coeur2$graisse, id = coeur2$id)
+## 
+##   n= 328, number of events= 76 
+## 
+##                    coef exp(coef) se(coef)      z Pr(>|z|)  
+## coeur2$graisse -0.09396   0.91032  0.05125 -1.833   0.0668 .
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+##                exp(coef) exp(-coef) lower .95 upper .95
+## coeur2$graisse    0.9103      1.099    0.8233     1.007
+## 
+## Concordance= 0.564  (se = 0.033 )
+## Likelihood ratio test= 3.5  on 1 df,   p=0.06
+## Wald test            = 3.36  on 1 df,   p=0.07
+## Score (logrank) test = 3.35  on 1 df,   p=0.07
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{confint}\NormalTok{(res)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                     2.5 %      97.5 %
+## coeur2$graisse -0.1944183 0.006496239
+\end{verbatim}
+
+« graisse » a une \(p_{values}= 0.0668> 0.05\). De plus, l'intervalle de
+confiance n'est pas interpretable car il contient 0. Nous ne pouvons pas
+faire d'estimation avec ce modèle.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{res=}\KeywordTok{coxph}\NormalTok{(survie}\OperatorTok{~}\NormalTok{coeur2}\OperatorTok{$}\NormalTok{emploi,}\DataTypeTok{id=}\NormalTok{coeur2}\OperatorTok{$}\NormalTok{id)}
+\KeywordTok{summary}\NormalTok{(res)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Call:
+## coxph(formula = survie ~ coeur2$emploi, id = coeur2$id)
+## 
+##   n= 328, number of events= 76 
+## 
+##                          coef exp(coef) se(coef)     z Pr(>|z|)  
+## coeur2$emploiConductor 0.4637    1.5899   0.2786 1.664   0.0961 .
+## coeur2$emploiDriver    0.2240    1.2511   0.2841 0.788   0.4305  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+##                        exp(coef) exp(-coef) lower .95 upper .95
+## coeur2$emploiConductor     1.590     0.6290    0.9209     2.745
+## coeur2$emploiDriver        1.251     0.7993    0.7168     2.183
+## 
+## Concordance= 0.548  (se = 0.031 )
+## Likelihood ratio test= 2.73  on 2 df,   p=0.3
+## Wald test            = 2.78  on 2 df,   p=0.2
+## Score (logrank) test = 2.82  on 2 df,   p=0.2
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{confint}\NormalTok{(res)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                              2.5 %    97.5 %
+## coeur2$emploiConductor -0.08243578 1.0097674
+## coeur2$emploiDriver    -0.33288997 0.7808997
+\end{verbatim}
+
+Les intervalles de confiance comprennent 0, rien n'est interpretable.
+
+\hypertarget{conclusion-comment-diminuer-les-rirsques-davoir-une-maladie-coronarienne.}{%
+\section{Conclusion : Comment diminuer les rirsques d'avoir une maladie
+coronarienne.}\label{conclusion-comment-diminuer-les-rirsques-davoir-une-maladie-coronarienne.}}
+
+Manger des fibres
+
+\end{document}

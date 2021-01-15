@@ -29,6 +29,7 @@ L'objectif de cette étude sera de connaître les bonnes habitudes alimentaires 
 \newpage
 \tableofcontents
 \newpage
+
 ## Présentation de la base de donnée
 
 Notre table de données contient 337 individus et 15 variables qui sont
@@ -140,6 +141,7 @@ Nous remarquons que la mediane de l'IMC du groupe de personnes malades est à pe
 
 # Etude de la consommation de fibre
 
+## Régression logistique binaire
 
 Nous allons commencer par une régréssion logistique qui nous permettera d'expliquer la variable $\textbf{MCC}$ en fonction de certaines covariables. Rappelons que dans la régréssion logistique ce n'est pas la réponse binaire qui est modélisé mais la probabilité de réalisation d'une des deux modalités (avoir une maladie coronarienne ou non). \
 
@@ -206,6 +208,7 @@ Nous pouvons alors conseiller de manger des fibres si nous voulons nous préveni
 
 
 # Etude de la consommation
+## Régression polytomique ordonné
 
 Nous voulons maintenant étudier la consommation à l'aide d'une régression polytomique ordonné. En effet nous aimerions voir ce qui influence la consommation de calories des personnes. Nous Nous voulons au moins 3 modalités, nous recodons donc la variable $\textbf{consommation}$ pour qu'elle soit qualitative à 3 modalités. Nous classons ainsi la consommation en "faible", "moyen" et "élevée". Nous avons alors bien une relation d'ordre $"faible" < "moyen" < "élevée"$ .\
 
@@ -250,6 +253,7 @@ A consommation de graisse fixée, augmenter la consommation de fibre de 1 g/jour
 Nous avons vu précedemment qu'augmenter sa consommation de fibre était une bonne chose pour se prévenir des maladies coronariennes, nous savons maintenant que à consommation de graisse fixée la consommation de fibre permet également au personne de ne pas manger trop de calories. \
 
 # Étude de l'emploi
+## Régression polytomique non ordonné
 
 Nous voulons maintenant étudier le l'emploi à l’aide d’une régression polytomique non ordonné. En effet nous aimerions voir ce qui influence la préférence de choisir un type d'emploi par apport aux autres. La variable emploi est composée de 3 modalités, qui sont : $conductor$, $bank worker$ et $driver$.  
 
@@ -286,7 +290,7 @@ $$\hat{\beta}_{taille|driver}=ln \bigg(\frac{\frac{P(driver| taille = x_1+1, poi
 À poids fixé, une taille qui augmente de 1cm va multiplier par au moins $exp( -0.15673368)=0.8549317$ et au plus $exp( -0.08952445)=0.9143659$ la préférence de driver par rapport à Bank worker. \
 
 Ainsi, la taille et le poids ont un effet sur le métier que l'on va choisir.
-
+\newpage
 # Étude de l'incidence instantannée de la maladie
 
 Dans cette partie, nous allons chercher à répondre à la problématique suivante :  à une date donnée, quelle sera le taux de nouveaux malades dans la population étudiée ?
@@ -473,6 +477,10 @@ res.c
 
 Le test conduit à ne pas rejeter cette hypothèse au seuil de $5\%$ : aucune covariable n'a un effet dépendant du temps. 
 
+## Modèle de Cox
+
+Maintenant que nous avons vérifié ces trois hypothèses, nous allons analyser le modèle de Cox. 
+Commençons par introduire toutes les variables dans le modèle.
 
 ```{r}
  res=coxph(survie~log(fibre)+log(taille)+poids+emploi+
@@ -528,7 +536,26 @@ confint(res)
 ```
 Les intervalles de confiance comprennent 0, rien n'est interpretable.
 
+\newpage
 
-# Conclusion : Comment diminuer les rirsques d'avoir une maladie coronarienne.
+# Conclusion 
 
-Manger des fibres
+Nous avons dans ce projet, appliqué toutes les méthodes que nous avons étudié en cours, sur cette table de donnée, ou du moins, celles qui étaient possible d'appliquer. Nous avons compris globalement compris les hypotheses du modèle de Cox qu'il fallait validé. En les appliquant, nous nous sommes rendu compte qu'il était assez compliquer de faire des interprétations précises sur la base de graphiques seulement et toutes les sources que nous avons trouvé utilisait ces méthodes graphiques. Malheureusement avec le peu de temps que nous avons, il nous est difficile d'approfonfire plus nos recherches pour cette partie, mais l'essentielle à été compris. 
+
+Au vu de nous résultat, nous pouvons dire que manger plus de fibre pourrais contribuer à la diminution de maladie.
+
+\newpage
+
+# Bibliographie 
+
+Proportional Hazards Regression Diagnostics, Dan Gillen, 2016  
+
+STHDA  $http://www.sthda.com/english/wiki/cox-model-assumptions$ 
+
+Cours7- Exemple et programmation $http://iml.univ-mrs.fr/~reboul/duree62011.pdf$
+
+Tests dans les modèles de durée $http://iml.univ-mrs.fr/~reboul/duree52013.pptx.pdf$
+
+Le modèle de Cox $https://perso.univ-rennes1.fr/valerie.monbet/ExposesM2/2013/cox_model.pdf$
+
+
