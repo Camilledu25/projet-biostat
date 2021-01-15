@@ -16,12 +16,13 @@ library(kableExtra)
 library(pander)
 library(corrplot)
 library(ggplot2)
+library(MASS)
 ```
 \newpage
 
 # Introduction 
 
-De nos jours, les maladies sont de plus en plus étudiées et de mieux en mieux comprises. De nombreux organismes et intituts recherchent des solutions pour vaincre ces maladies en trouvant des traitements. De nombreuses diciplines sont impliquées, notamment la biostatistique, qui permet d'étudier différentes situations avec des données. Dans notre cas, nous allons étudier l'occurence des maladies coronarienne du coeur. Une étude préalable à déja été faite sur une cohorte d'individus. Ces individus ont répondu à une date donnée à une enquête sur les habitudes alimentaires. Les réponses ont été recueilli dans une base de donnée que l'on nomme \textbf{Coeur}. \
+De nos jours, les maladies sont de plus en plus étudiées et de mieux en mieux comprises. De nombreux organismes et instituts recherchent des solutions pour vaincre ces maladies en trouvant des traitements. De nombreuses diciplines sont impliquées, notamment la biostatistique, qui permet d'étudier différentes situations avec des données. Dans notre cas, nous allons étudier l'occurence des maladies coronarienne du coeur. Une étude préalable à déja été faite sur une cohorte d'individus. Ces individus ont répondu à une date donnée à une enquête sur les habitudes alimentaires. Les réponses ont été recueilli dans une base de donnée que l'on nomme \textbf{Coeur}. \
 L'objectif de cette étude sera de connaître les bonnes habitudes alimentaires à adopter pour se prevenir d'une maladie coronarienne.
 
 ## Présentation de la base de donnée
@@ -131,100 +132,35 @@ p
 
 Nous remarquons que la mediane de l'IMC du groupe de personnes malades est à peine plus basse que la médiane pour le groupe de personnes non malade. Une simple analyse descriptive ne suffit pas pour obtenir des résultats bien concluants, nous allons continuer avec des méthodes plus poussées. Nous commencerons par des régréssions logistiques.
 
-# MCC expliqué par le poids et l'IMC
+
+
+# Etude de la consommation de fibre
+
 
 Nous allons commencer par une régréssion logistique qui nous permettera d'expliquer la variable $\textbf{MCC}$ en fonction de certaines covariables. Rappelons que dans la régréssion logistique ce n'est pas la réponse binaire qui est modélisé mais la probabilité de réalisation d'une des deux modalités (avoir une maladie coronarienne ou non). \
 
-Nous allons commencer par regarder le meilleur modèle en comparant les AIC puis nous étudierons ce modèle. \
+Nous allons commencer par regarder le meilleur modèle. Nous enlevons la $\textbf{taille}$ et le $\textbf{poids}$ pour laisser $\textbf{imc}$ car elles sont très fortement corrélées. Nous avons tout d'abord voulu comparer en comparant les AIC avec stepAIC. 
 
-```{r,}
-library(MASS)
-coeurlogbin<-coeur%>%dplyr::select(-id,-dateEntree,-dateSortie,-dateNaissance,-statut)
+```{r,results=FALSE}
 
+coeurlogbin<-coeur%>%dplyr::select(-id,-dateEntree,-dateSortie,-dateNaissance,-statut,-poids,-taille)
 res<-glm(MCC~.,family = binomial(logit),data=coeurlogbin)
 stepAIC(res)
 ```
+Le modèle ayant le plus faible AIC est le suivant : 
+$$y=\mu +  \beta_1 fibre$$  \
 
-Le modèle ayant le plus faible AIC et que nous allons donc etudier est le suivant : 
-$$y=\mu +  \beta_1 poids + \beta_2 imc$$
+Nous avons également utilisé les p-values pour trouver le meilleur modèle en enlevant à la main petit à petit les variables les moins significatives et nous obtenons encore le même modèle.
 
-Regardons tout d'abord les relations entre les maladies coronariennes et l'imc. \
+```{r,results=FALSE}
 
-```{r,}
-ggplot(coeurlogbin,aes(x=coeurlogbin$imc,y=coeurlogbin$MCC))+geom_point()
-
-```
-Nous osbervons qu
-
-Regardons les relations entre les maladies coronariennes et le poids. \
-
-```{r,}
-ggplot(coeurlogbin,aes(x=coeurlogbin$poids,y=coeurlogbin$MCC))+geom_point()
-
+coeurlogbin<-coeur%>%dplyr::select(-id,-dateEntree,-dateSortie,-dateNaissance,-statut,-poids,-taille)
+res<-glm(MCC~.-emploi-moisEnqu_e-consommation-1-hauteConsomation-imc-graisse,family = binomial(logit),data=coeurlogbin)
+summary(res)
 ```
 
-Faisons une régression logisitique : \
 
-```{r,}
-reslog<-glm(MCC~imc+poids,family = binomial(logit),data=coeurlogbin)
-summary(reslog)
-
-```
-
-Nous vérifions tout d'abord les conditions d'application de la régréssion logistique. Il est recommandé d'avoir en pratique 10 fois plus d'évenements que de paramètres dans le modèle. Nous utilisons ici 3 paramétres nous devrions donc avoir au moins 30 malades. 
-
-```{r,}
-table(coeurlogbin$MCC)
-```
-Nous avons 76 malades nous pouvons donc continuer. \
-
-Il faut maintenant vérifier que nous ne sommes pas dans le cas de surdipersion c'est à dire qu'il ne faut pas que la dispersion réelle des données soit supérieure à celle prévue par la théorie car dans ce cas l'erreur standard des paramètres est sous-estimée ce qui peut conduire à des p-valeurs très faible et donner des conclusions erronnées. Evaluons donc s'il y a ou non une surdispersion : $$\frac{deviance residuelle}{nddl}=\frac{346.17}{325}=1.06$$ nous pouvons ainsi considérer qu'il n'y a pas surdispersion. \
-
-
-Nous pouvons maintenant passer à l'interprétation des résultats de la régréssion logistique. \
-
-```{r,}
-reslog<-glm(MCC~imc+poids,family = binomial(logit),data=coeurlogbin)
-summary(reslog)
-
-```
-Notons tout d'abord que les p-values de imc et poids sont inférieurs au seuil de $5\%$, les effets des variables explicatives sont donc significatifs au seuil de $5 \%$. L'intercept n'est pas significatif nous le retirons donc du modèle. \
-
-```{r,}
-reslog<-glm(MCC~imc+poids-1,family = binomial(logit),data=coeurlogbin)
-reslog
-summary(reslog)
-
-```
-
-Nous observons que les p-valeurs sont toutes inférieures au seuil de $5 \%$. De plus $\hat \beta_1=0.17541$ et $\hat \beta_2=-0.07536$. \
-
-Nous ajoutons de plus les intervalles de confiances qui sont primordiaux pour effectuer une analyse et une interprétation. Nous pouvons faire des intervalles de confiance car nous disposons d'un assez grand jeu de donnés contenant 328 observations. \
-
-```{r,}
-confint(reslog)
-```
-Notons que les intervalles de confiance sont interprétable car ils ne contiennt pas 0.\
-
-
-Nous observons au premier abord (sans regarder les intervalles de confiance) que plus l'imc est élevé plus le risque d'être malade augmente car le signe du coefficient (0.17541) est positif. Au contraire plus le poids est élevé, plus le risque d'être malade diminue car le signe du coefficient (-0.07536) est négatif. Ainsi nous pouvons dire plus simplement que si l'imc augmente, le risque d'être malade augmente. \
-Adaptons une analyse plus précise en quantifiant : 
-
-Nous augmentons l'imc  de 1 $(x_1 + 1)$ et nous laissons le poids fixé à $x_2$. \
-Si l'imc augemente de 1, l'odds d'être malade est $exp(\beta_{1}) exp(x_1 \beta_{1} + x_2 \beta_{2} )$
-
-Nous pouvons donc voir qu'a poids fixé, augmenter l'imc de 1 va multiplier l'odds d'avoir une MCC par au moins $\exp(0.02898397)=1.03$  et au plus $\exp(0.32575504)=1.39$. Nous pouvons de plus voir qu'a imc fixé, augmenter le poids de 1 va multiplier l'odds d'avoir une MCC par au moins $\exp(-0.12623701)=0.88$ et au plus $\exp(-0.02628422)=0.97$.  \
-
-Fixer une imc et augmenter le poids signifie que nous considèrons que la personne prend en taille ce qui paraît un peu hors réalite. En effet, si nous prenons une personne de 60 kg pour 1m65, l'imc est de 22.04. Si nous fixons l'imc à 22.04 et que cette personne prend 1kg, pour ne pas changer d'imc elle devra avoir pris également 1.4 cm en plus. \
-
-En conclusion de cette partie, il faut retenir que plus l'imc d'une personne augmente, plus le risque q'elle tombe malade d'une maladie coronarienne diminue. Avoir un imc stable et assez bas est un facteur protecteur du risque de maladie coronarienne.
-
-
-# MCC expliqué par la consommation de fibre
-
-Nous trouvons également intéressant de regarder le lien entre la consommation de fibre et les maladies coronariennes. \
-
-Regardons la relation entre les maladies coronariennes et la consommation de fibre. \
+Regardons donc la relation entre les maladies coronariennes et la consommation de fibre. \
 
 ```{r,}
 ggplot(coeurlogbin,aes(x=coeurlogbin$fibre,y=coeurlogbin$MCC))+geom_point()
@@ -233,57 +169,76 @@ ggplot(coeurlogbin,aes(x=coeurlogbin$fibre,y=coeurlogbin$MCC))+geom_point()
 
 Nous observons que les personnes mangeant plus de 2g de fibre par jour sont moins malades. \
 
-Effectuer désormais la régréssion logistique. \
+Nous voulons faire une régression logistique, nous allons donc vérifier les conditions d'application. Il est recommandé d'avoir en pratique 10 fois plus d'évenements que de paramètres dans le modèle. Nous allons utiliser ici 2 paramétres ( en comptant l'intercept) nous devrions donc avoir au moins 20 malades. 
+
+```{r,}
+table(coeurlogbin$MCC)
+```
+Nous avons 76 malades nous pouvons donc continuer. \
+
+Il faut maintenant vérifier que nous ne sommes pas dans le cas de surdipersion c'est à dire qu'il ne faut pas que la dispersion réelle des données soit supérieure à celle prévue par la théorie car dans ce cas l'erreur standard des paramètres est sous-estimée ce qui peut conduire à des p-valeurs très faible et donner des conclusions erronnées. Evaluons donc s'il y a ou non une surdispersion :
+
+```{r,}
+reslog<-glm(MCC~fibre,family = binomial(logit),data=coeurlogbin)
+summary(reslog)
+```
+
+ $$\frac{deviance residuelle}{nddl}=\frac{351.12}{326}=1.08$$ nous pouvons ainsi considérer qu'il n'y a pas surdispersion. \
+
+Nous pouvons donc maintenant utiliser la régression logistique et faire des interprétations : \
+
 ```{r,}
 reslog<-glm(MCC~fibre-1,family = binomial(logit),data=coeurlogbin) #nous enelevons l'intercept qui n'est pas significatif
 summary(reslog)
 confint(reslog)
 ```
 
-Augmenter la consommation de fibre de 1g par jour va multiplier l'odds d'avoir une MCC par au moins $\exp(-0.8604690)=0.43$  et au plus $\exp(-0.5542772)=0.57$. Autrement dit, si nous augmentons notre consommation de fibre de 1g par jour nous divisons par au moins (1/0.43)=2.32 l'odds de contracter une maladie coronarienne. \
+Augmenter la consommation de fibre de 1g par jour va multiplier la chance d'avoir une maladie coronarienne par au moins $\exp(-0.8604690)=0.43$  et au plus $\exp(-0.5542772)=0.57$. Autrement dit, si nous augmentons notre consommation de fibre de 1g par jour nous divisons par au moins (1/0.43)=2.32 l'odds de contracter une maladie coronarienne. \
+Nous pouvons alors conseiller de manger des fibres si nous voulons nous prévenir des maladies coronariennes. 
 
 
+# Etude de la consommation
 
-# régréssion polytomique ordonné
+Nous voulons maintenant étudier la consommation à l'aide d'une régression polytomique ordonné. En effet nous aimerions voir ce qui influence la consommation de calories des personnes. Nous Nous voulons au moins 3 modalités, nous recodons donc la variable $\textbf{consommation}$ pour qu'elle soit qualitative à 3 modalités. Nous classons ainsi la consommation en "faible", "moyen" et "élevée". Nous avons alors bien une relation d'ordre $"faible" < "moyen" < "élevée"$ .\
 
 ```{r,}
 coeur <-mutate(coeur,consom_dec =case_when(
-  consommation<23~"peu",
+  consommation<23~"faible",
   consommation>22 & consommation<30~"moyen",
-  consommation>29 ~"beaucoup"))
+  consommation>29 ~"élevée"))
 coeur$consom_dec<-as.factor(coeur$consom_dec)
 ```
 
-```{r,}
+
+Nous faisons un stepAIC pour choisir le meilleur modèle au sens du critère $\textbf{AIC}$. \
+
+```{r,results=FALSE}
 coeurlogbin1<-coeur%>%dplyr::select(-id,-dateEntree,-dateSortie,-dateNaissance,-statut,-hauteConsomation,-consommation)
 modele<-polr(consom_dec~.,data=coeurlogbin1)
 stepAIC(modele)
 ```
 
+Nous obtenons qu'il faut garder $\textbf{graisse}$ et $\textbf{fibre}$, nous faisons donc la régréssion polytomique ordonné selon ces variables. \
 
-
-
-
-
-
-
-```{r,}
+```{r,warning=FALSE}
 modele2<-polr(consom_dec~graisse+fibre,data=coeurlogbin1)
 modele2
 confint(modele2)
 ```
 
-La commande polyr utilisée renvoie l'opposé du coefficient $\beta$ considéré donc nous obtenons les résultats suivants pour nos coefficients: \
+Notons que la commande $polyr$ utilisée renvoie l'opposé du coefficient $\beta$ considéré donc nous obtenons les "vrais" résultats suivants : $\hat{\beta_{graisse}}=0.43$ et $\hat{\beta_{fibre}}=0.59$ avec les intervalles de confiance suivant : $\hat{\beta_{graisse} } \in [0.31,0.56]$ et  $\hat{\beta_{fibre} } \in [0.12,1.10]$
 
-QUESTION SUR LES MOINS
+Nous pouvons regarder noter que : 
+$$ln \bigg(\frac{odds(Y \leq moyen | graisse = x_1+1, fibre=x_2)}{odds(Y \leq moyen | graisse = x_1, fibre=x_2)}\bigg)=\beta_{graisse}$$
 
-$$ln \bigg(\frac{odds(Y \leq moyen | graisse = x_1+1, fibre=x_2)}{odds(Y \leq moyen | graisse = x_1, fibre=x_2)}\bigg)=\beta_{graisse}=1.29$$
+A consommation de fibre fixée, augmenter la consommation de graisse de 1 g/jour va multiplier l'odds de $Y \neq moyen$ par au moins  $exp(0.31)=1.36$ et au plus $exp(0.56)=1.75$. \ 
 
-A consommation de fibre fixée, augmenter la consommation de graisse de 1 g/jour va diviser $odds(Y \leq moyen)$ par au moins $exp(-1.56)$ et au plus $exp(-1.05)$. \ QUEST
+De plus : \
+$$ln \bigg(\frac{odds(Y \leq moyen | fibre = x_1+1, graisse=x_2)}{odds(Y \leq moyen | fibre = x_1, graisse=x_2)}\bigg)=\beta_{fibre}$$
 
-$$ln \bigg(\frac{odds(Y \leq moyen | fibre = x_1+1, graisse=x_2)}{odds(Y \leq moyen | fibre = x_1, graisse=x_2)}\bigg)=\beta_{fibre}=1.81$$
+A consommation de graisse fixée, augmenter la consommation de fibre de 1 g/jour va multiplier l'odds de $Y \neq moyen$ par au moins $exp(0.12)=1.12$ et au plus $exp(1.10)=3$. Ainsi manger plus de fibre va augmenter les chances que la personne mange moins de calorie dans la journée. Ceci n'est pas surpenant car les fibres sont connus pour être rassasiant. \
 
-A consommation de graisse fixée, augmenter la consommation de fibre de 1 g/jour va diviser $odds(Y \leq moyen)$ par au moins $exp(-2.599)$ et au plus $exp(-1.07)$. \ QUEST
+Nous avons vu précedemment qu'augmenter sa consommation de fibre était une bonne chose pour se prévenir des maladies coronariennes, nous savons maintenant que à consommation de graisse fixée la consommation de fibre permet également au personne de ne pas manger trop de calories. \
 
 # régréssion polytomique non-ordonné
 
