@@ -25,7 +25,7 @@ library(MASS)
 # Introduction 
 
 De nos jours, les maladies sont de plus en plus étudiées et de mieux en mieux comprises. De nombreux organismes et instituts recherchent des solutions pour vaincre ces maladies en trouvant des traitements. De nombreuses diciplines sont impliquées, notamment la biostatistique, qui permet d'étudier différentes situations avec des données. Dans notre cas, nous allons étudier l'occurence des maladies coronarienne du coeur. Une étude préalable à déja été faite sur une cohorte d'individus. Ces individus ont répondu à une date donnée à une enquête sur les habitudes alimentaires. Les réponses ont été recueilli dans une base de donnée que l'on nomme \textbf{Coeur}. \
-L'objectif de cette étude sera de connaître les bonnes habitudes alimentaires à adopter pour se prevenir d'une maladie coronarienne.
+L'objectif principal de cette étude sera de connaître les bonnes habitudes alimentaires à adopter pour se prevenir d'une maladie coronarienne.
 \newpage
 \tableofcontents
 \newpage
@@ -90,9 +90,9 @@ df_quanti<-coeur%>%dplyr::select(consommation,fibre,graisse,taille,poids)%>%summ
 pander(df_quanti)
 ```
 
-Les individus mangent en moyenne 2835 calories par jours. Ils ingèrent de plus 12.76 grammes de gras par jour, mesurent 173 cm et pèsent 72.40 kilo-gramme en moyenne. \
+Les individus mangent en moyenne 2835 calories par jours. Ils ingèrent de plus 12.76 grammes de gras et 1.723 grammes de fibre par jour, mesurent 173,4 cm et pèsent 72.40 kilo-gramme en moyenne. \
 
-Faisons maintenant un sommaire des variables quantitatives : 
+Faisons maintenant un sommaire des variables qualitatives : 
 
 ```{r,echo=FALSE,fig.width=6, fig.height=4,fig.align='center'}
 df_quali<-coeur%>%dplyr::select(statut,emploi,moisEnqu_e,hauteConsomation)%>%summary()
@@ -143,7 +143,7 @@ Nous remarquons que la mediane de l'IMC du groupe de personnes malades est à pe
 
 ## Régression logistique binaire
 
-Nous allons commencer par une régréssion logistique qui nous permettera d'expliquer la variable $\textbf{MCC}$ en fonction de certaines covariables. Rappelons que dans la régréssion logistique ce n'est pas la réponse binaire qui est modélisé mais la probabilité de réalisation d'une des deux modalités (avoir une maladie coronarienne ou non). \
+Nous allons commencer par une régréssion logistique qui nous permettera d'expliquer la variable $\textbf{MCC}$ en fonction de certaines covariables. Rappelons que dans la régréssion logistique ce n'est pas la réponse binaire qui est modélisée mais la probabilité de réalisation d'une des deux modalités (avoir une maladie coronarienne ou non). \
 
 Nous allons commencer par regarder le meilleur modèle. Nous enlevons la $\textbf{taille}$ et le $\textbf{poids}$ pour laisser $\textbf{imc}$ car elles sont très fortement corrélées. Nous avons tout d'abord voulu comparer en comparant les AIC avec stepAIC. 
 
@@ -185,32 +185,32 @@ table(coeurlogbin$MCC)
 ```
 Nous avons 76 malades nous pouvons donc continuer. \
 
-Il faut maintenant vérifier que nous ne sommes pas dans le cas de surdipersion c'est à dire qu'il ne faut pas que la dispersion réelle des données soit supérieure à celle prévue par la théorie car dans ce cas l'erreur standard des paramètres est sous-estimée ce qui peut conduire à des p-valeurs très faible et donner des conclusions erronnées. Evaluons donc s'il y a ou non une surdispersion :
+Il faut maintenant vérifier que nous ne sommes pas dans le cas de surdipersion c'est à dire qu'il ne faut pas que la dispersion réelle des données soit supérieure à celle prévue par la théorie car dans ce cas l'erreur standard des paramètres est sous-estimée ce qui peut conduire à des p-valeurs très faible et donner des conclusions erronées. Evaluons donc s'il y a ou non une surdispersion :
 
 ```{r,}
 reslog<-glm(MCC~fibre,family = binomial(logit),data=coeurlogbin)
 summary(reslog)
 ```
 
- $$\frac{deviance residuelle}{nddl}=\frac{351.12}{326}=1.08$$ nous pouvons ainsi considérer qu'il n'y a pas surdispersion. \
+Nous avons ainsi $$\frac{deviance residuelle}{nddl}=\frac{351.12}{326}=1.08$$ nous pouvons donc considérer qu'il n'y a pas surdispersion. \
 
 Nous pouvons donc maintenant utiliser la régression logistique et faire des interprétations : \
 
 ```{r,warning=FALSE,message=FALSE}
 reslog<-glm(MCC~fibre-1,family = binomial(logit),data=coeurlogbin)
-summary(reslog)
+reslog
 confint(reslog)
 ```
 
 $$ln \bigg(\frac{odds(Y =1  | fibre = x_1+1)}{odds(Y=1 | fibre = x_1)}\bigg)=\hat{\beta}_{fibre}=-0.70288$$
-Augmenter la consommation de fibre de 1g par jour va multiplier la chance d'avoir une maladie coronarienne par au moins $\exp(-0.8604690)=0.43$  et au plus $\exp(-0.5542772)=0.57$. Autrement dit, si nous augmentons notre consommation de fibre de 1g par jour nous divisons par au moins (1/0.43)=2.32 l'odds de contracter une maladie coronarienne. \
+Augmenter la consommation de fibre de 1g par jour va multiplier la chance d'avoir une maladie coronarienne par au moins $\exp(-0.8604690)=0.43$  et au plus $\exp(-0.5542772)=0.57$. Autrement dit, si nous augmentons notre consommation de fibre de 1g par jour nous divisons par au moins (1/0.43)=2.32 la chance de contracter une maladie coronarienne. \
 Nous pouvons alors conseiller de manger des fibres si nous voulons nous prévenir des maladies coronariennes. 
 
 
 # Etude de la consommation
 ## Régression polytomique ordonné
 
-Nous voulons maintenant étudier la consommation à l'aide d'une régression polytomique ordonné. En effet nous aimerions voir ce qui influence la consommation de calories des personnes. Nous Nous voulons au moins 3 modalités, nous recodons donc la variable $\textbf{consommation}$ pour qu'elle soit qualitative à 3 modalités. Nous classons ainsi la consommation en "faible", "moyen" et "élevée". Nous avons alors bien une relation d'ordre $"faible" < "moyen" < "élevée"$ .\
+Nous voulons maintenant étudier la consommation à l'aide d'une régression polytomique ordonnée. En effet nous aimerions voir ce qui influence la consommation de calories des personnes. Nous voulons au moins 3 modalités, nous recodons donc la variable $\textbf{consommation}$ pour qu'elle soit qualitative à 3 modalités. Nous classons ainsi la consommation en "faible", "moyen" et "élevée". Nous avons alors bien une relation d'ordre $"faible" < "moyen" < "élevée"$ .\
 
 ```{r,}
 coeur <-mutate(coeur,consom_dec =case_when(
@@ -230,7 +230,7 @@ modele<-polr(consom_dec~.,data=coeurlogbin1)
 stepAIC(modele)
 ```
 
-Nous obtenons qu'il faut garder $\textbf{graisse}$ et $\textbf{fibre}$, nous faisons donc la régréssion polytomique ordonné selon ces variables. \
+Nous obtenons qu'il faut garder $\textbf{graisse}$ et $\textbf{fibre}$, nous faisons donc la régréssion polytomique ordonnée selon ces variables. \
 
 ```{r,warning=FALSE,message=FALSE}
 modele2<-polr(consom_dec~graisse+fibre,data=coeurlogbin1)
@@ -238,7 +238,7 @@ modele2
 confint(modele2)
 ```
 
-Notons que la commande $polyr$ utilisée renvoie l'opposé du coefficient $\beta$ considéré donc nous obtenons les "vrais" résultats suivants : $\hat{\beta}_{graisse}=0.43$ et $\hat{\beta_{fibre}}=0.59$ avec les intervalles de confiance suivant : $\hat{\beta}_{graisse}  \in [0.31,0.56]$ et  $\hat{\beta}_{fibre}  \in [0.12,1.10]$
+Notons que la commande $polr$ utilisée renvoie l'opposé du coefficient $\beta$ considéré donc nous obtenons les "vrais" résultats suivants : $\hat{\beta}_{graisse}=0.43$ et $\hat{\beta_{fibre}}=0.59$ avec les intervalles de confiance suivant : $\hat{\beta}_{graisse}  \in [0.31,0.56]$ et  $\hat{\beta}_{fibre}  \in [0.12,1.10]$
 
 Nous pouvons regarder noter que : 
 $$ln \bigg(\frac{odds(Y \leq moyen | graisse = x_1+1, fibre=x_2)}{odds(Y \leq moyen | graisse = x_1, fibre=x_2)}\bigg)=\hat{\beta}_{graisse}$$
@@ -255,9 +255,9 @@ Nous avons vu précedemment qu'augmenter sa consommation de fibre était une bon
 # Étude de l'emploi
 ## Régression polytomique non ordonné
 
-Nous voulons maintenant étudier le l'emploi à l’aide d’une régression polytomique non ordonné. En effet nous aimerions voir ce qui influence la préférence de choisir un type d'emploi par apport aux autres. La variable emploi est composée de 3 modalités, qui sont : $conductor$, $bank worker$ et $driver$.  
+Nous voulons maintenant étudier l'emploi à l’aide d’une régression polytomique non ordonnée. En effet nous aimerions voir ce qui influence la préférence de choisir un type d'emploi par rapport aux autres. La variable $\textbf{emploi}$ est composée de 3 modalités, qui sont : $conductor$, $bank worker$ et $driver$.  
 
-Nous faisons un stepAIC pour choisir le meilleur modèle au sens du critère AIC
+Nous faisons un stepAIC pour choisir le meilleur modèle au sens du critère AIC : 
 
 ```{r,results=FALSE,include=FALSE}
 library(nnet)
@@ -265,8 +265,8 @@ modele3<-multinom(emploi~.,data=coeurlogbin1)
 stepAIC(modele3)
 ```
 
-Nous obtenons qu’il faut garder taille et poids.
-Nous faisons donc la régréssion polytomique non ordonné selon ces variables.
+Nous obtenons qu’il faut garder les variables $\textbf{taille}$ et $\textbf{poids}$.
+Nous faisons donc la régréssion polytomique non ordonnée selon ces variables.
 
 ```{r,message=FALSE,warning=FALSE}
 modele4<-multinom(emploi~poids+taille,data=coeurlogbin1)
@@ -274,24 +274,27 @@ modele4
 confint(modele4)
 ```
 
-Bank worker est la modalité de référence pour emploi. \
+$\textbf{Bank worker}$ est la modalité de référence pour emploi. \
 
 $$\hat{\beta}_{poids|conductor}=ln \bigg(\frac{\frac{P(conductor| poids = x_1+1, taille=x_2)}{P(Bank worker | poids = x_1+1, taille=x_2)}}{\frac{P(conductor | poids = x_1, taille=x_2)}{P(Bank worker | poids = x_1,taille=x_2)}}\bigg)=-0.07620753 $$  
 
-À taille fixé, un poids de 1kg en plus va multiplier par au moins $exp(-0.1114239)=0.8945595$ et au plus$exp( -0.04099117)=0.9598376$ la préférence de conductor par rapport à Bank worker. \
+À taille fixée, un poids de 1kg en plus va multiplier par au moins $exp(-0.1114239)=0.8945595$ et au plus $exp( -0.04099117)=0.9598376$ la préférence de conductor par rapport à Bank worker. \
+En d'autres termes, à taille fixée une augmentation de 1kg va diviser la préférence de conductor par rapport à Bank Worker de au moins $(1/0.8945595)=1.12$. 
 
 $$\hat{\beta}_{taille|conductor}=ln \bigg(\frac{\frac{P(conductor| taille = x_1+1, poids=x_2)}{P(Bank worker | taille = x_1+1, poids=x_2)}}{\frac{P(conductor | taille = x_1, poids=x_2)}{P(Bank worker | taille = x_1,poids=x_2)}}\bigg)=-0.1694273$$  
 
-À poids fixé, une taille qui augmente de 1cm va multiplier par au moins $exp( -0.1959546)=$ et au plus $exp( -0.14290007)=0.8668407$ la préférence de conductor par rapport à Bank worker. \
+À poids fixé, une taille qui augmente de 1cm va multiplier par au moins $exp(-0.1959546)=0.82$ et au plus $exp( -0.14290007)=0.8668407$ la préférence de conductor par rapport à Bank worker. \
 
 
 $$\hat{\beta}_{taille|driver}=ln \bigg(\frac{\frac{P(driver| taille = x_1+1, poids=x_2)}{P(Bank worker | taille = x_1+1, poids=x_2)}}{\frac{P(driver | taille = x_1, poids=x_2)}{P(Bank worker | taille = x_1,poids=x_2)}}\bigg)=-0.1231291$$
 
-À poids fixé, une taille qui augmente de 1cm va multiplier par au moins $exp( -0.15673368)=0.8549317$ et au plus $exp( -0.08952445)=0.9143659$ la préférence de driver par rapport à Bank worker. \
+À poids fixé, une taille qui augmente de 1cm va multiplier par au moins $exp(-0.15673368)=0.8549317$ et au plus $exp( -0.08952445)=0.9143659$ la préférence de driver par rapport à Bank worker. \
 
-Ainsi, la taille et le poids ont un effet sur le métier que l'on va choisir.
+Ainsi, la taille et le poids ont un effet sur le métier choisit.
 \newpage
-# Étude de l'incidence instantannée de la maladie
+
+# Étude de l'incidence instantanée de la maladie
+
 
 Dans cette partie, nous allons chercher à répondre à la problématique suivante :  à une date donnée, quelle sera le taux de nouveaux malades dans la population étudiée ?
 
@@ -326,7 +329,7 @@ coeur2<-coeur2%>%mutate(date_sortie_num=as.numeric(as.Date(coeur2$dateSortie)))
 Nous pouvons désormais faire nos analyse avec le modèle de Cox. 
 Pour une première analyse, nous estimerons notre modèle en prenant en compte toute les covariables possible présentent dans la table de données. Mais le modèle de risques proportionnels de Cox fait plusieurs hypothèses. Ainsi, il est important d'évaluer si un tel modèle ajusté décrit correctement les données.
 
-Ici, nous allons discuter de trois types de diagonostiques pour le modèle de Cox:
+Ici, nous allons discuter de trois types de diagnostiques pour le modèle de Cox:
 
 \begin{itemize}
 \item Test de l'hypothèse des risques proportionnels.
@@ -336,10 +339,10 @@ Ici, nous allons discuter de trois types de diagonostiques pour le modèle de Co
 
 ## Détection de la non-linéarité des variables
 
-Souvent, nous supposons que les covariables continues ont une forme linéaire. Cependant, cette hypothèse doit être vérifiée. Le traçage des résidus de Martingale par rapport à des covariables continues est une approche courante utilisée pour détecter la non - linéarité ou, en d'autres termes, pour évaluer la forme fonctionnelle d'une covariable. Pour une covariable continue donnée, les modèles du graphique peuvent suggérer que la variable n'est pas correctement ajustée.
+Souvent, nous supposons que les covariables continues ont une forme linéaire. Cependant, cette hypothèse doit être vérifiée. Le traçage des résidus de Martingale par rapport à des covariables continues est une approche courante utilisée pour détecter la non-linéarité ou, en d'autres termes, pour évaluer la forme fonctionnelle d'une covariable. Pour une covariable continue donnée, les modèles du graphique peuvent suggérer que la variable n'est pas correctement ajustée.
 
 La non-linéarité n'est pas un problème pour les variables catégorielles, nous n'examinons donc que les graphiques des résidus de martingale par rapport à une variable continue.
-Testons avec le poids : 
+Testons avec le $\textbf{poids}$ : 
 
 ```{r,fig.width=5,fig.height=4,fig.align='center'}
 survie=Surv(coeur2$date_entree_num,coeur2$date_sortie_num,coeur2$MCC)
@@ -356,8 +359,8 @@ lines( rbili, fitted(lm( mresids ~ rbili )), col="blue", lwd=2 )
 
 ```
 
-Il semble que le poids soit linéaire.
-Maintenant testons avec la variable fibre
+Il semble que le $\textbf{poids}$ soit linéaire.
+Maintenant testons avec la variable $\textbf{fibre}$
 ```{r,fig.width=5,fig.height=4,fig.align='center',echo=FALSE}
 mresids <- residuals( res, type="martingale" )
 lmfit <- lm(fibre~poids+consommation+graisse+taille,data=coeur2 )
@@ -371,7 +374,7 @@ lines( rbili, fitted(lm( mresids ~ rbili )), col="blue", lwd=2 )
 
 ```
 
-On distingue clairement 2 groupes de résidus et la courbe varie un peu. On va appliquer une transformation logarithme à cette variable : 
+Nous distinguons clairement 2 groupes de résidus et la courbe varie un peu. Nous allons appliquer une transformation logarithme à cette variable : 
 
 ```{r,fig.width=5,fig.height=4,fig.align='center',echo=FALSE}
 mresids <- residuals( res, type="martingale" )
@@ -386,8 +389,7 @@ lines( rbili, fitted(lm( mresids ~ rbili )), col="blue", lwd=2 )
 
 ```
 
-On voit que c'est déja un peu mieux. On appliquera le logarithme à fibre dans nos modèles.
-Testons la consommation 
+Nous voyons que c'est déja un peu mieux. Nous appliquerons donc le logarithme à $\textbf{fibre}$ dans nos modèles. Testons la consommation : \
 
 ```{r,fig.width=5,fig.height=4,fig.align='center',echo=FALSE}
 mresids <- residuals( res, type="martingale" )
@@ -402,8 +404,8 @@ lines( rbili, fitted(lm( mresids ~ rbili )), col="blue", lwd=2 )
 
 ```
 
-Il n'y a pas besoin d'appliquer de transformations, les résidus ne sont pas clairement entassé comme l'exemple fibre.  
-Testons pour graisse :
+Il n'y a pas besoin d'appliquer de transformations, les résidus ne sont pas clairement entassés comme pour $\textbf{fibre}$.  
+Testons pour $\textbf{graisse}$ :
 
 ```{r,fig.width=5,fig.height=4,fig.align='center',echo=FALSE}
 mresids <- residuals( res, type="martingale" )
@@ -419,7 +421,7 @@ lines( rbili, fitted(lm( mresids ~ rbili )), col="blue", lwd=2 )
 ```
 
 Comme précédemment, nous n'avons pas besoin d'appliquer de transformation.  
-Testons désormais la taille : 
+Testons désormais la $\textbf{taille}$ : 
 
 ```{r,fig.width=5,fig.height=4,fig.align='center',echo=FALSE}
 mresids <- residuals( res, type="martingale" )
@@ -449,19 +451,19 @@ lines( rbili, fitted(lm( mresids ~ rbili )), col="blue", lwd=2 )
 
 ```
 
-On la courbe parait plus stable. On fera donc une transformation logarithme sur la variable taille.
+La courbe paraît plus stable. Nous ferons donc une transformation logarithme sur la variable $\textbf{taille}$.
 
 
 ## Examiner les observations influentes (ou les valeurs aberrantes).
 
-Pour tester des observations influentes ou des valeurs aberrantes, nous pouvons utiliser les valeurs $dfbeta$. Le principe est de comparer le coefficient de une variable donnée lorsque un point donnée participe ou pas à la régression. On mesure l’influence d’un point sur le coefficient estimé.
+Pour tester des observations influentes ou des valeurs aberrantes, nous pouvons utiliser les valeurs $dfbeta$. Le principe est de comparer le coefficient d'une variable donnée lorsque un point donné participe ou pas à la régression. Nous mesurons l’influence d’un point sur le coefficient estimé.
 
 ```{r}
 ggcoxdiagnostics(res, type = "dfbeta",
                  linear.predictions = FALSE, ggtheme = theme_bw())
 ```
 
-Nous voyons que que la comparaison des valeurs les plus élevées aux coefficients de régression suggère qu'aucune des observations n'est terriblement influente individuellement.
+Nous voyons que la comparaison des valeurs les plus élevées aux coefficients de régression suggère qu'aucune des observations n'est influente individuellement.
 
 ## Test de l'hypothèse des risques proportionnels.
 
@@ -491,9 +493,9 @@ Commençons par introduire toutes les variables dans le modèle.
 
 Le test de Wald teste l’effet d’une covariable avec les autres covariable dans le modèle. S’il n’est pas significatif, cela ne veut pas dire qu’il ne le serait pas dans le modèle constitué uniquement de cette covariable.
 
-Le test de Wald pour la covariable « taille » montre que le coefficient correspondant est fortement significatifs au seuil $5\%$ $p_{values} < 0.05$. Les autres covariables ne modifient pas significativement cette incidence lorsque taille est dans le modèle.
+Le test de Wald pour la covariable $\textbf{taille}$ montre que le coefficient correspondant est fortement significatif au seuil $5\%$, $p_{values} < 0.05$. Les autres covariables ne modifient pas significativement cette incidence lorsque $\textbf{taille}$ est dans le modèle.
 
-Nous sélectionnons les variables pas à pas c'est à dire que nous enlèvons celle dont la $p_{valeur}$ est la plus élevée. Ensuite nous refaisons tourner le modèle et nous recommençons jusqu’à obtention de toutes les variables significatives.  
+Nous sélectionnons les variables pas à pas c'est à dire que nous enlèvons celle dont la $p_{value}$ est la plus élevée. Ensuite nous refaisons tourner le modèle et nous recommençons jusqu’à obtention de toutes les variables significatives.  
 
 Nous obtenons le modèle suivant :
 
@@ -503,10 +505,10 @@ summary(res)
 confint(res)
 ```
 
-En supposant que toutes les autres covariables sont fixées, l'augmentation de la taille de 1cm multiplie l'incidence instentannée de la maladie par au moins, $exp(-15.16573)=2.591834e-07$ et au plus $exp(-3.781619)=0.02278577$.
+En supposant que toutes les autres covariables sont fixées, l'augmentation de la taille de 1cm multiplie l'incidence instantanée de la maladie par au moins, $exp(-15.16573)=2.591834e-07$ et au plus $exp(-3.781619)=0.02278577$.
 
 
-Auparavant, nous avont constater que dans le modèle constitué de toutes les covariables, tous les autres coefficients n'étaient pas significatifs au seuil de 5 pourcents. Mais qu'en est t-il si on test avec un modèle avec seulement 1 covariable. Regardons ce qui se passe pour fibre :
+Auparavant, nous avont constater que dans le modèle constitué de toutes les covariables, tous les autres coefficients n'étaient pas significatifs au seuil de 5$\%$. Mais qu'en est-t-il si nous testons avec un modèle avec seulement 1 covariable. Regardons ce qui se passe pour $\textbf{fibre}$ :
 
 ```{r}
 res=coxph(survie~log(fibre),id=id, data=coeur2)
@@ -514,11 +516,12 @@ summary(res)
 
 confint(res)
 ```
-« fibre » a un coefficient significatif au seuil 5% car $p_{values} =0.0293 < 0.05$. 
+\
+La variable $\textbf{fibre}$  a un coefficient significatif au seuil 5$\%$ car $p_{values} =0.0293 < 0.05$. 
 
-En supposant que toutes les autres covariables sont fixées, l’augmentation de fibre de 1 unité multiplie l'incidence instantannée de la maladie par au moins $exp(-1.531084)=0.2163011$.
+En supposant que toutes les autres covariables sont fixées, l’augmentation de fibre de 1 unité multiplie l'incidence instantanée de la maladie par au moins $exp(-1.531084)=0.2163011$.
 
-Testons maintenant pour la variable graisse 
+Testons maintenant pour la variable $\textbf{graisse}$ 
 
 ```{r}
  res=coxph(survie~coeur2$graisse,id=coeur2$id)
@@ -526,7 +529,7 @@ summary(res)
 confint(res)
 ```
 
-« graisse » a une $p_{values}= 0.0668> 0.05$. De plus, l'intervalle de confiance n'est pas interpretable car il contient 0. Nous ne pouvons pas faire d'estimation avec ce modèle.
+La variable $\textbf{graisse}$ a une $p_{values}= 0.0668> 0.05$. De plus, l'intervalle de confiance n'est pas interpretable car il contient 0. Nous ne pouvons pas faire d'estimation avec ce modèle.
 
 
 ```{r}
@@ -540,9 +543,10 @@ Les intervalles de confiance comprennent 0, rien n'est interpretable.
 
 # Conclusion 
 
-Nous avons dans ce projet, appliqué toutes les méthodes que nous avons étudié en cours, sur cette table de donnée, ou du moins, celles qui étaient possible d'appliquer. Nous avons compris globalement compris les hypotheses du modèle de Cox qu'il fallait validé. En les appliquant, nous nous sommes rendu compte qu'il était assez compliquer de faire des interprétations précises sur la base de graphiques seulement et toutes les sources que nous avons trouvé utilisait ces méthodes graphiques. Malheureusement avec le peu de temps que nous avons, il nous est difficile d'approfonfire plus nos recherches pour cette partie, mais l'essentielle à été compris. 
+Nous avons appliqué dans ce projet toutes les méthodes étudiées lors de l'unité de "Biostatistiques" sur la table de données $\textbf{Coeur}$, ou du moins, celles qui étaient possible d'appliquer. Nous avons globalement compris les hypothèses du modèle de Cox qu'il fallait valider. En les appliquant, nous nous sommes rendu compte qu'il était assez compliqué de faire des interprétations précises sur la base de graphiques seulement et toutes les sources que nous avons trouvé utilisaient ces méthodes graphiques. 
+Malheureusement nous étions à cours de temps pour approfondir encore plus nos recherches pour cette partie, mais l'essentiel a été compris. 
 
-Au vu de nous résultat, nous pouvons dire que manger plus de fibre pourrais contribuer à la diminution de maladie.
+Au vu de nos résultat, nous pouvons dire que manger plus de fibre pourrait contribuer à la diminution de maladie.
 
 \newpage
 
