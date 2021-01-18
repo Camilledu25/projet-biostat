@@ -296,7 +296,7 @@ Ainsi, la taille et le poids ont un effet sur le métier choisit.
 # Étude de l'incidence instantanée de la maladie
 
 
-Dans cette partie, nous allons chercher à répondre à la problématique suivante :  à une date donnée, quelle sera le taux de nouveaux malades dans la population étudiée ?
+Dans cette partie, nous allons chercher à répondre à la problématique suivante :  à une date donnée, quel sera le taux de nouveaux malades dans la population étudiée ?
 
 
 <!-- Les paramètres à estimer sont fonction d'incidence instentatnée, sera les lambda, represente le fait que à une date donnée quelle estt le taux de production de nouveau malade qui va avoir lieux,Ce n'est pas les lambda que lon estime, on estime les parametres d'un modeles de cox qui sont des effets multiplcatifs entre différents lambda, pour chaque sous population possible, on a une fonction laambda et cette fonction lambda nous dit lamambda de t, c est a une date t combien , quelle est le taux de production de nouveau malade. -->
@@ -326,14 +326,14 @@ year(coeur2$dateSortie)<-1900+year(coeur2$dateSortie) %% 100
 coeur2<-coeur2%>%mutate(date_sortie_num=as.numeric(as.Date(coeur2$dateSortie)))
 ```
 
-Nous pouvons désormais faire nos analyse avec le modèle de Cox. 
-Pour une première analyse, nous estimerons notre modèle en prenant en compte toute les covariables possible présentent dans la table de données. Mais le modèle de risques proportionnels de Cox fait plusieurs hypothèses. Ainsi, il est important d'évaluer si un tel modèle ajusté décrit correctement les données.
+Nous pouvons ensuite faire nos analyses avec le modèle de Cox. 
+Pour une première analyse, nous estimerons notre modèle en prenant en compte toutes les covariables possible qui sont présentes dans la table de données. Mais le modèle de risques proportionnels de Cox fait plusieurs hypothèses. Ainsi, il est important d'évaluer si un tel modèle décrit correctement les données.
 
 Ici, nous allons discuter de trois types de diagnostiques pour le modèle de Cox:
 
 \begin{itemize}
 \item Test de l'hypothèse des risques proportionnels.
-\item Examiner les observations influentes (ou les valeurs aberrantes).
+\item Examination des observations influentes (ou les valeurs aberrantes).
 \item Détection de la non-linéarité des variables.
 \end{itemize}
 
@@ -468,7 +468,7 @@ Nous voyons que la comparaison des valeurs les plus élevées aux coefficients d
 ## Test de l'hypothèse des risques proportionnels.
 
 Regardons désormais si l’hypothèse d'indépendance du temps des formes multiplicatives et des covariables est vérifiée.
-L'hypothèse des risques proportionnels peut être vérifiée à l'aide de tests statistiques et de diagnostics graphiques basés sur les résidus de Schoenfeld. 
+On peut tester l'hypothèse des risques proportionnels avec la fonction suivante : 
 
 ```{r}
 res=coxph(survie~log(fibre)+log(taille)+poids+consommation+
